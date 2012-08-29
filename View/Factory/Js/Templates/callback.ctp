@@ -1,0 +1,1 @@
+function(){var node=<?php echo (isset($this->id))? 'document.getElementById("' . $this->id . '")' : 'window'; ?>,callback=function(){<?php echo $this->code; ?>};return function(){callback.apply(node,arguments);}}

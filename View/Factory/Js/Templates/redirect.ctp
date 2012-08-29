@@ -1,0 +1,1 @@
+(function(){<?php echo (is_int($this->timeout))? 'setTimeout(function(){location="' . str_replace('"', '\"', $this->location) . '";},' . $this->timeout . ');' : 'location="' . str_replace('"', '\"', $this->location) . '";'; ?>})();

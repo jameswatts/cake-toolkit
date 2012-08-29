@@ -1,0 +1,2 @@
+<input id="<?php echo $this->getId(); ?>"<?php echo $this->parseAttributes(array('accept', 'alt', 'autocomplete', 'autofocus', 'checked', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'framename', 'height', 'list', 'max', 'maxlength', 'min', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'src', 'step', 'type', 'value', 'width')); ?><?php echo $this->parseClass(); ?>/>
+<?php echo $this->parseEvents(); ?>

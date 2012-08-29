@@ -1,0 +1,1 @@
+<meta <?php echo (isset($this->name))? 'name="' . $this->name . '"' : ((isset($this->httpequiv))? 'http-equiv="' . $this->httpequiv . '"' : ''); ?> <?php echo (isset($this->charset))? 'charset="' . str_replace('"', '\"', $this->charset) . '"' : 'content="' . str_replace('"', '\"', $this->content) . '"'; ?>/>
