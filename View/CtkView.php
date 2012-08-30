@@ -18,7 +18,7 @@
  */
 
 App::uses('HelperCollection', 'View');
-App::uses('CtkBaseView', 'Ctk.View');
+App::uses('BaseView', 'Ctk.View');
 App::uses('CtkHelper', 'Ctk.View');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkNode', 'Ctk.Lib');
@@ -89,7 +89,7 @@ abstract class CtkView extends CtkObject {
 /**
  * The base view object.
  *
- * @var CtkBaseView
+ * @var BaseView
  */
 	protected $_baseView = null;
 
@@ -128,10 +128,10 @@ abstract class CtkView extends CtkObject {
  * 
  * Also calls the CtkView::build() method to generate the object-oriented structure.
  * 
- * @param CtkBaseView $baseView The base view object.
+ * @param BaseView $baseView The base view object.
  * @throws CakeException if there is an error in the view.
  */
-	final public function __construct(CtkBaseView $baseView) {
+	final public function __construct(BaseView $baseView) {
 		$this->_baseView = $baseView;
 		if (is_string($this->renderer)) {
 			$class = $this->renderer . 'Renderer';
@@ -253,7 +253,7 @@ abstract class CtkView extends CtkObject {
 /**
  * Returns the base view object.
  *
- * @return CtkBaseView
+ * @return BaseView
  */
 	final public function getBaseView() {
 		return $this->_baseView;

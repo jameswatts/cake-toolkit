@@ -24,7 +24,7 @@ abstract class CtkAppController extends AppController {
  *
  * @var string
  */
-	public $name = 'Ctk';
+	public $name = 'CtkApp';
 
 /**
  * An array containing the names of helpers this controller uses.
@@ -38,7 +38,7 @@ abstract class CtkAppController extends AppController {
  *
  * @var string
  */
-	public $viewClass = 'Ctk.CtkBase';
+	public $viewClass = 'Ctk.Base';
 
 /**
  * The layout to use

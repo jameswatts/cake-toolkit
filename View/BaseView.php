@@ -30,7 +30,7 @@ App::uses('View', 'View');
  *
  * @package       Ctk.View
  */
-class CtkBaseView extends View {
+class BaseView extends View {
 
 /**
  * Sub-directory for this view file.  This is often used for extension based routing.
