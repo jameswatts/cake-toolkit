@@ -16,7 +16,13 @@ The main features of the plugin include:
 
 To start using the **Cake Toolkit** it's as simple as including the plugin in your application and extending the *CtkAppController* to inherit everything you'll need.
 
-To get up and running quickly check out the [Hello World](https://github.com/jameswatts/cake-toolkit/wiki/tutorials/Hello_World) tutorial from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki).
+To get up and running quickly check out the [Quick Start](https://github.com/jameswatts/cake-toolkit/wiki/Quick_Start) or [Hello World](https://github.com/jameswatts/cake-toolkit/wiki/Hello_World) tutorials from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki).
+
+Requirements
+------------
+
+* CakePHP 2+
+* PHP 5.3+
 
 Documentation
 -------------
