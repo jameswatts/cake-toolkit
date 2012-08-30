@@ -43,8 +43,7 @@ class TestController extends CtkAppController {
 			'test/xml' => 'XML Nodes Test',
 			'test/html' => 'HTML Elements Test',
 			'test/css' => 'CSS Syntax Test',
-			'test/js' => 'JavaScript API Test',
-			'test/events' => 'Client Events Test'
+			'test/js' => 'JavaScript API Test'
 		));
 	}
 
@@ -54,7 +53,25 @@ class TestController extends CtkAppController {
  * @return void
  */
 	public function xml() {
+		$this->layout = 'Ctk.Xml/default';
 		$this->set('title_for_layout', 'Test - XML Nodes');
+		$this->set('booksCatalog', array(
+			array(
+				'title' => 'Do Androids Dream Of Electric Sheep',
+				'author' => 'Philip K Dick',
+				'isbn' => '0575079932'
+			),
+			array(
+				'title' => 'Neuromancer',
+				'author' => 'William Gibson',
+				'isbn' => '0006480411'
+			),
+			array(
+				'title' => 'Snow Crash',
+				'author' => 'Neal Stephenson',
+				'isbn' => '0241953189'
+			)
+		));
 	}
 
 /**
@@ -82,15 +99,6 @@ class TestController extends CtkAppController {
  */
 	public function js() {
 		$this->set('title_for_layout', 'Test - JavaScript API');
-	}
-
-/**
- * Action for testing CTK events.
- *
- * @return void
- */
-	public function events() {
-		$this->set('title_for_layout', 'Test - Client Events');
 	}
 }
 
