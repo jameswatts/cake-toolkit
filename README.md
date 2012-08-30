@@ -14,7 +14,48 @@ The main features of the plugin include:
 * **Plug and Play:** The functionality of the plugin only adds to the current features available in *CakePHP*, making it possible for **CTK** views to work along-side normal static ".ctp" views.
 * **Legacy Features:** Great care has been taken to maintaining the availability of the standard View features available in *CakePHP*, such as *layouts*, *elements*, *content blocks* and *helpers*.
 
-To start using the **Cake Toolkit** it's as simple as including the plugin in your application and extending the *CtkAppController*, or using the *AppComponent* for existing controllers, to inherit everything you'll need.
+To start using the **Cake Toolkit** it's as simple as including the plugin in your application and extending the *CtkAppController* to inherit everything you'll need, for example:
+
+```php
+class ExampleController extends CtkAppController {
+
+	public function index() {
+		// action logic
+	}
+}
+```
+
+Or, using the *AppComponent* for existing controllers:
+
+```php
+public $components = array('Ctk.App');
+```
+
+You can then define your view as a class, and build you UI using the objects made available through the included factories, without requiring extensive knowledge of the underlying technologies, for example:
+
+```php
+class IndexView extends CtkView {
+
+	public $factories = array('Html', 'Js');
+
+	public function build() {
+		// create a HTML div
+		$div = $this->Html->div();
+			// create a HTML button
+			$button = $this->Html->Button(array(
+				'value' => __('Click Me')
+			));
+			// add an event to the button
+			$button->addEvent('click', $this->Js->Alert(array(
+				'text' => __('Hello World')
+			)));
+		// add the button to the div
+		$div->add($button);
+		// add the div to the view
+		$this->add($div);
+	}
+}
+```
 
 To get up and running quickly check out the [Quick Start](https://github.com/jameswatts/cake-toolkit/wiki/Quick_Start) or [Hello World](https://github.com/jameswatts/cake-toolkit/wiki/Hello_World) tutorials from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki).
 
