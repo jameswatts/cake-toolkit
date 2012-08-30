@@ -133,6 +133,24 @@ abstract class CtkView extends CtkObject {
  */
 	final public function __construct(CtkBaseView $baseView) {
 		$this->_baseView = $baseView;
+		if (is_string($this->renderer)) {
+			$class = $this->renderer . 'Renderer';
+			App::uses($class, 'Ctk.View/Renderer');
+			if (!class_exists($class)) {
+				throw new CakeException(sprintf('Unknown renderer: %s', $class));
+			}
+			$this->_renderer = new $class($this->renderer, $this);
+		} else {
+			throw new CakeException('No renderer defined');
+		}
+		if (is_string($this->processor)) {
+			$class = $this->processor . 'Processor';
+			App::uses($class, 'Ctk.View/Processor');
+			if (!class_exists($class)) {
+				throw new CakeException(sprintf('Unknown processor: %s', $class));
+			}
+			$this->_processor = new $class($this->processor, $this);
+		}
 		if (is_array($this->factories)) {
 			for ($i = 0; $i < count($this->factories); $i++) {
 				$name = $this->factories[$i];
@@ -330,22 +348,11 @@ abstract class CtkView extends CtkObject {
  * @return string Rendered content
  */
 	final public function render() {
-		if (is_string($this->renderer)) {
-			$class = $this->renderer . 'Renderer';
-			App::uses($class, 'Ctk.View/Renderer');
-			if (!class_exists($class)) {
-				throw new CakeException(sprintf('Unknown renderer: %s', $class));
-			}
-			$this->_renderer = new $class($this->renderer, $this);
-			$content = '';
-			foreach ($this->_childNodes as $node) {
-				$content .= $node->render();
-			}
-			$this->_renderer = null;
-			return $content;
-		} else {
-			throw new CakeException('No renderer defined');
+		$content = '';
+		foreach ($this->_childNodes as $node) {
+			$content .= $node->render();
 		}
+		return $content;
 	}
 
 /**
@@ -355,15 +362,8 @@ abstract class CtkView extends CtkObject {
  * @return string Processed content
  */
 	final public function process($content) {
-		if (is_string($this->processor)) {
-			$class = $this->processor . 'Processor';
-			App::uses($class, 'Ctk.View/Processor');
-			if (!class_exists($class)) {
-				throw new CakeException(sprintf('Unknown processor: %s', $class));
-			}
-			$this->_processor = new $class($this->processor, $this);
-			$content = $processor->process($content);
-			$this->_processor = null;
+		if (isset($this->_processor)) {
+			$content = $this->_processor->process($content);
 		}
 		return $content;
 	}
