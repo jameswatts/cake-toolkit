@@ -14,7 +14,7 @@ The main features of the plugin include:
 * **Plug and Play:** The functionality of the plugin only adds to the current features available in *CakePHP*, making it possible for **CTK** views to work along-side normal static ".ctp" views.
 * **Legacy Features:** Great care has been taken to maintaining the availability of the standard View features available in *CakePHP*, such as *layouts*, *elements*, *content blocks* and *helpers*.
 
-To start using the **Cake Toolkit** it's as simple as including the plugin in your application and extending the *CtkAppController* to inherit everything you'll need.
+To start using the **Cake Toolkit** it's as simple as including the plugin in your application and extending the *CtkAppController*, or using the *AppComponent* for existing controllers, to inherit everything you'll need.
 
 To get up and running quickly check out the [Quick Start](https://github.com/jameswatts/cake-toolkit/wiki/Quick_Start) or [Hello World](https://github.com/jameswatts/cake-toolkit/wiki/Hello_World) tutorials from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki).
 
