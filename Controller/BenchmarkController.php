@@ -48,10 +48,10 @@ class BenchmarkController extends CtkAppController {
 	public function index() {
 		$this->layout = 'Ctk.default'; // switch layout to use CTK default
 		$this->set('benchmarkLinks', array(
-			'benchmark/single' => 'Single 1 Dimension',
-			'benchmark/lineal' => 'Lineal Relations',
-			'benchmark/exponential' => 'Exponential Relations',
-			'benchmark/matrix' => 'Data Matrix'
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'single' => 'Single 1 Dimension',
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'lineal' => 'Lineal Relations',
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'exponential' => 'Exponential Relations',
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'matrix' => 'Data Matrix'
 		));
 	}
 

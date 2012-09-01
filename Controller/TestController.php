@@ -40,10 +40,10 @@ class TestController extends CtkAppController {
  */
 	public function index() {
 		$this->set('testLinks', array(
-			'test/xml' => 'XML Nodes Test',
-			'test/html' => 'HTML Elements Test',
-			'test/css' => 'CSS Syntax Test',
-			'test/js' => 'JavaScript API Test'
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'xml' => 'XML Nodes Test',
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'html' => 'HTML Elements Test',
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'css' => 'CSS Syntax Test',
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'js' => 'JavaScript API Test'
 		));
 	}
 

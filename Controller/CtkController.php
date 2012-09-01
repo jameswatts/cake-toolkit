@@ -44,9 +44,9 @@ class CtkController extends CtkAppController {
 			'https://github.com/jameswatts/cake-toolkit' => 'Source Code',
 			'https://github.com/jameswatts/cake-toolkit/wiki' => 'Documentation',
 			'https://github.com/jameswatts/cake-toolkit/issues' => 'Support',
-			'test.php?plugin=Ctk' => 'Test Suite',
-			'ctk/test' => 'Runtime Tests',
-			'ctk/benchmark' => 'Benchmarks',
+			$this->webroot . ((substr($this->webroot, -1) == '/')? '' : '/') . 'test.php?plugin=Ctk' => 'Test Suite',
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'test' => 'Runtime Tests',
+			$this->here . ((substr($this->here, -1) == '/')? '' : '/') . 'benchmark' => 'Benchmarks',
 			'mailto:james.watts@cakedc.com?subject=Cake Toolkit Feedback' => 'Feedback'
 		));
 	}
