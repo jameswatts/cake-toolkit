@@ -31,7 +31,7 @@ Or, using the *AppComponent* for existing controllers:
 public $components = array('Ctk.App');
 ```
 
-You can then define your view as a class, and build you UI using the objects made available through the included factories, without requiring extensive knowledge of the underlying technologies, for example:
+You can then define your view as a class, and build your UI using the objects made available through the included factories, without requiring extensive knowledge of the underlying technologies, for example:
 
 ```php
 class IndexView extends CtkView {
@@ -55,6 +55,20 @@ class IndexView extends CtkView {
 		$this->add($div);
 	}
 }
+```
+
+It's also possible to use the special Factory helper to import objects from the **Cake Toolkit** into normal static ".ctp" views, bringing the power of the plugin to your existing view code.
+
+```php
+public $helpers = array('Ctk.Factory');
+```
+
+You can then use the objects within your markup, similar to when using the HTML helper, for example:
+
+```php
+<div id="example">
+	<?php echo $this->Factory->Html->Span(array('text' => 'Hello World')); ?>
+</div>
 ```
 
 To get up and running quickly check out the [Quick Start](https://github.com/jameswatts/cake-toolkit/wiki/Quick_Start) or [Hello World](https://github.com/jameswatts/cake-toolkit/wiki/Hello_World) tutorials from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki).
