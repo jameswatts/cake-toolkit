@@ -42,7 +42,7 @@ class IndexView extends CtkView {
 		$pluginList = $this->Html->Ul();
 		foreach ($this->pluginLinks as $url => $text) {
 			$pluginListItem = $this->Html->Li();
-			$pluginListItem->add($this->Html->A(array('href' => $url, 'text' => $text, 'target' => '_blank')));
+			$pluginListItem->add($this->Html->A(array('href' => $url, 'text' => $text, 'target' => (strstr($url, '://'))? '_blank' : '_self')));
 			$pluginList->add($pluginListItem);
 		}
 		$this->add($pluginList);
