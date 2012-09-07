@@ -17,6 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('Helper', 'View');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkBuildable', 'Ctk.Lib');
 App::uses('CtkContent', 'Ctk.Lib');

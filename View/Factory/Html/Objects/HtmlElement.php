@@ -18,6 +18,7 @@
  */
 
 App::uses('CtkNode', 'Ctk.Lib');
+App::uses('CtkEvent', 'Ctk.Lib');
 
 /**
  * Abstract class representing a base element in HTML.
@@ -46,6 +47,7 @@ abstract class HtmlElement extends CtkNode {
 		'dir' => null,
 		'draggable' => null,
 		'dropzone' => null,
+		'events' => null,
 		'hidden' => null,
 		'lang' => null,
 		'spellcheck' => null,
@@ -176,8 +178,10 @@ abstract class HtmlElement extends CtkNode {
  */
 	final public function parseEvents() {
 		$content = '';
-		if ($this->hasEvents()) {
+		if ($this->hasEvents() || (isset($this->events) && $this->_allowEvents)) {
 			$content .= '<script type="text/javascript">(function(){';
+		}
+		if ($this->hasEvents()) {
 			foreach ($this->_events as $type => $events) {
 				foreach ($events as $event) {
 					$code = $event->render();
@@ -185,6 +189,17 @@ abstract class HtmlElement extends CtkNode {
 					$content .= "var node=document.getElementById('{$this->getId()}'),{$callback}=function(){{$code}};if(node.addEventListener){node.addEventListener('{$type}',function(){return {$callback}.apply(node,arguments);});}else if(node.attachEvent){node.attachEvent('on{$type}',function(){return {$callback}.apply(node,arguments);});}else{node['on{$type}']=function(){return {$callback}.apply(node,arguments);};}";
 				}
 			}
+		}
+		if (isset($this->events)) {
+			if ($this->_allowEvents) {
+				foreach ($this->events as $type => $event) {
+					$code = ($event instanceof CtkEvent)? $event->render() : (string) $event;
+					$callback = uniqid('JS_');
+					$content .= "var node=document.getElementById('{$this->getId()}'),{$callback}=function(){{$code}};if(node.addEventListener){node.addEventListener('{$type}',function(){return {$callback}.apply(node,arguments);});}else if(node.attachEvent){node.attachEvent('on{$type}',function(){return {$callback}.apply(node,arguments);});}else{node['on{$type}']=function(){return {$callback}.apply(node,arguments);};}";
+				}
+			}
+		}
+		if ($this->hasEvents() || (isset($this->events) && $this->_allowEvents)) {
 			$content .= '})();</script>';
 		}
 		return $content;

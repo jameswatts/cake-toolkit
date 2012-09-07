@@ -42,7 +42,7 @@ abstract class CtkView extends CtkObject {
  *
  * @var mixed A single name as a string or a list of names as an array.
  */
-	public $factories = array('Cake');
+	public $factories = array('Html', 'Css', 'Js');
 
 /**
  * The name of the renderer to render the content.
@@ -371,7 +371,7 @@ abstract class CtkView extends CtkObject {
 /**
  * Abstract method used to define the object-oriented structure of the view.
  *
- * The methos may call subsequent methods which contain blocks of nodes or process content.
+ * The method may call subsequent methods which contain blocks of nodes or process content.
  */
 	abstract public function build();
 }
