@@ -1,7 +1,7 @@
 Cake Toolkit (CTK)
 ==================
 
-The **Cake Toolkit** is a *CakePHP* plugin designed for medium-to-large scale web applications which require a scalable and standard solution to handling views.
+The **Cake Toolkit** is a *CakePHP* plugin designed for medium-to-large scale web applications which require a scalable and standard solution to handling Views.
 
 The plugin allows Views to be defined as a class, providing a powerful object-oriented factory interface to dynamically build your application's UI with configurable objects.
 
@@ -10,11 +10,11 @@ The main features of the plugin include:
 * **Object-Oriented Design:** Every UI element is defined and manipulated as an object, giving you maximum control over the development of your View, by limiting your work to the semantic definition of the interface.
 * **Abstraction and Encapsulation:** The ability to define a View as a native *PHP* class unlocks the potential of the native object-oriented features of the language, allowing Views to be extended, blocks of content to be abstracted, and view logic to be encapsulated in helper methods.
 * **Separation of Concerns:** The design of the plugin provides a clear and coherent separation of the languages implicated in your development, such as *PHP*, *HTML*, *CSS* and *JavaScript*, making it easy to delegate experts in their field to the relevant areas, without having to work around code they're not familiar with.
-* **Extensible Architecture:** Allowing collections of UI elements to be packaged into factories makes it easy to not only extend the existing factories, but also create your own, tailored to your requirements.
-* **Plug and Play:** The functionality of the plugin only adds to the current features available in *CakePHP*, making it possible for **CTK** views to work along-side normal static ".ctp" views.
-* **Legacy Features:** Great care has been taken to maintaining the availability of the standard View features available in *CakePHP*, such as *layouts*, *elements*, *content blocks* and *helpers*.
+* **Extensible Architecture:** Allowing collections of UI elements to be packaged into factories makes it easy to, not only extend the existing factories but, also create your own, tailored to your requirements.
+* **Plug and Play:** The functionality of the plugin only adds to the current features available in *CakePHP*, making it possible for **CTK** Views to work along-side normal static ".ctp" Views.
+* **Legacy Features:** Great care has been taken to maintaining the availability of the standard features for Views available in *CakePHP*, such as *layouts*, *elements*, *content blocks* and *helpers*.
 
-To start using the **Cake Toolkit** it's as simple as including the plugin in your application and extending the *CtkAppController* to inherit everything you'll need, for example:
+To start using the **Cake Toolkit** it's as simple as including the plugin in your application, and then extending the *CtkAppController* to inherit everything you'll need, for example:
 
 ```php
 class ExampleController extends CtkAppController {
@@ -25,13 +25,13 @@ class ExampleController extends CtkAppController {
 }
 ```
 
-Or, using the *AppComponent* for existing controllers:
+Or, alternatively, using the *AppComponent* for existing controllers:
 
 ```php
 public $components = array('Ctk.App');
 ```
 
-You can then define your view as a class, and build your UI using the objects made available through the included factories, without requiring extensive knowledge of the underlying technologies, for example:
+You can then define your View as a class, and build your UI using the objects made available through the included factories, without requiring extensive knowledge of the underlying technologies, for example:
 
 ```php
 class IndexView extends CtkView {
@@ -40,7 +40,7 @@ class IndexView extends CtkView {
 
 	public function build() {
 		// create a HTML div
-		$div = $this->Html->div();
+		$div = $this->Html->Div();
 			// create a HTML button
 			$button = $this->Html->Button(array(
 				'value' => __('Click Me')
@@ -57,7 +57,7 @@ class IndexView extends CtkView {
 }
 ```
 
-It's also possible to use the special Factory helper to import objects from the **Cake Toolkit** into normal static ".ctp" views, bringing the power of the plugin to your existing view code.
+It's also possible to use the special *Factory* helper to import objects from the **Cake Toolkit** into normal static ".ctp" Views, bringing the power of the plugin to your existing View code.
 
 ```php
 public $helpers = array('Ctk.Factory');
@@ -67,7 +67,7 @@ You can then use the objects within your markup, similar to when using the HTML 
 
 ```php
 <div id="example">
-	<?php echo $this->Factory->Html->Span(array('text' => 'Hello World')); ?>
+	<?php echo $this->Factory->Html->Span(array('text' => __('Hello World'))); ?>
 </div>
 ```
 
@@ -93,7 +93,7 @@ Full documentation, as well as tutorials, are also available from the [wiki](htt
 Performance
 -----------
 
-As with all modern web applications, performance is an important issue to take into consideration, especially if you're running a large enterprise scale application which has high development and maintenance costs associated with it.
+As with all modern web applications, performance is an important issue to take into consideration, specially if you're running a large enterprise scale application which has high development and maintenance costs associated with it.
 
 It's important to note that the aim of the **Cake Toolkit** is not to increase the performance of the View layer in the *MVC* stack, but to improve the effectiveness of the development, as well as decrease the maintenance required for large scale applications. *CakePHP* already has very powerful and configurable caching mechanisms available, which are also available to **CTK** when building your Views, and strongly recommended due to the heavy use of objects by the plugin.
 
@@ -110,12 +110,12 @@ Packed with the plugin is a *Benchmark* controller which provides various action
 * **single:** This action simply creates a series XML nodes. It accepts a single argument, which is the number of nodes to generate.
 * **lineal:** This action creates a multi-dimensional sequence of XML nodes in a lineal hierarchy. It accepts a single argument, which is the number of levels of nodes to generate.
 * **exponential:** This action creates a multi-dimentional sequence of XML nodes in an exponential hierarchy. It accepts a single argument, which is the number of exponential factors to generate.
-* **matrix:** This action display a matrix of data in a HTML table. It accepts 2 arguments, the first is the number of rows to generate, and the second the number of cells in each row.
+* **matrix:** This action displays a matrix of data in a HTML table. It accepts 2 arguments, the first is the number of rows to generate, and the second the number of cells in each row.
 
 When "debug" is set to any value higher than *0*, and assuming caching is NOT enabled, the plugin will also add a **Ctk-Info** header to the *HTTP* response, for example:
 
 ```
-Ctk-Info: controller=Benchmark, action=index, render-time=0.019, total-memory=6.86MB, memory-usage=1.83MB
+Ctk-Info: controller=Benchmark, action=single, render-time=0.019, total-memory=6.86MB, memory-usage=1.83MB
 ```
 
 This header contains the following values:
