@@ -20,6 +20,8 @@
 App::uses('HelperCollection', 'View');
 App::uses('BaseView', 'Ctk.View');
 App::uses('CtkHelper', 'Ctk.View');
+App::uses('CtkBuildable', 'Ctk.Lib');
+App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkNode', 'Ctk.Lib');
 App::uses('CtkElement', 'Ctk.Lib');
@@ -262,10 +264,10 @@ abstract class CtkView extends CtkObject {
 /**
  * Adds a node to the children of the view object.
  *
- * @param CtkNode $node The node object.
+ * @param CtkBuildable $node The node object, must be buildable.
  * @return CtkNode
  */
-	final public function add(CtkNode $node) {
+	final public function add(CtkBuildable $node) {
 		$node->setParent(null);
 		$this->_childNodes[] = $node;
 		return $node;
@@ -299,10 +301,10 @@ abstract class CtkView extends CtkObject {
  * Set the node for a block. This will overwrite any existing nodes.
  *
  * @param string $name Name of the block
- * @param CtkNode $node The node object.
+ * @param CtkRenderable $node The node object, must be renderable.
  * @return CtkView
  */
-	final public function assign($name, CtkNode $node) {
+	final public function assign($name, CtkRenderable $node) {
 		$this->_blocks[(string) $name] = array($node);
 		return $this;
 	}
@@ -311,10 +313,10 @@ abstract class CtkView extends CtkObject {
  * Append a node to an existing or new block. Appending to a new block will create the block.
  *
  * @param string $name Name of the block
- * @param CtkNode $node The node object.
+ * @param CtkRenderable $node The node object, must be renderable.
  * @return CtkView
  */
-	final public function append($name, CtkNode $node) {
+	final public function append($name, CtkRenderable $node) {
 		$this->_blocks[(string) $name][] = $node;
 		return $this;
 	}
