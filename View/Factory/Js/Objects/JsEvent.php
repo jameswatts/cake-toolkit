@@ -46,7 +46,7 @@ abstract class JsEvent extends CtkEvent {
  * @param string $code The JavaScript code to modify.
  * @return string
  */
-	protected function prepareCode($code) {
+	protected function _prepareCode($code) {
 		$code = trim($code);
 		if (substr($code, -1) === ';') {
 			return substr($code, 0, strlen($code)-1);
