@@ -345,11 +345,16 @@ abstract class CtkView extends CtkObject {
 	}
 
 /**
- * Renders the templates recursively for all nodes and child nodes.
+ * Renders the templates recursively for all nodes and child nodes, including nodes in view blocks.
  *
  * @return string Rendered content
  */
 	final public function render() {
+		foreach ($this->_blocks as $block => $nodes) {
+			foreach ($nodes as $node) {
+				$this->_baseView->append((string) $block, $node->render());
+			}
+		}
 		$content = '';
 		foreach ($this->_childNodes as $node) {
 			$content .= $node->render();
