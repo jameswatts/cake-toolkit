@@ -41,6 +41,7 @@ class HtmlScript extends HtmlElement {
 	protected $_params = array(
 		'type' => 'text/javascript',
 		'src' => null,
+		'code' => null,
 		'defer' => false
 	);
 
@@ -50,13 +51,6 @@ class HtmlScript extends HtmlElement {
  * @var string The element type.
  */
 	protected $_nodeType = 'script';
-
-/**
- * Limits the parent allowed for this node.
- *
- * @var array List of parents allowed by name, or NULL for no limit.
- */
-	protected $_limitParent = array('HtmlHead');
 
 /**
  * Determines if the node accepts child nodes.
