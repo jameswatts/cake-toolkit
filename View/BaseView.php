@@ -34,7 +34,6 @@ class BaseView extends View {
 
 /**
  * Sub-directory for this view file.  This is often used for extension based routing.
- * Eg. With a `ctk` extension, $subDir would be `ctk/`
  *
  * @var string
  */
