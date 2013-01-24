@@ -35,6 +35,13 @@ abstract class CtkFactory extends CtkObject {
 	protected $_name = null;
 
 /**
+ * The plugin for this factory.
+ *
+ * @var string The plugin for the factory.
+ */
+	protected $_plugin = null;
+
+/**
  * The current view calling the factory.
  *
  * @var CtkView The current view.
@@ -49,8 +56,9 @@ abstract class CtkFactory extends CtkObject {
  * @param string $name The name of the factory.
  * @param CtkView $view The current view.
  */
-	final public function __construct($name, CtkView $view) {
+	final public function __construct($name, $plugin, CtkView $view) {
 		$this->_name = (string) $name;
+		$this->_plugin = (string) $plugin;
 		$this->_view = $view;
 	}
 
@@ -64,7 +72,7 @@ abstract class CtkFactory extends CtkObject {
  */
 	final public function __call($name, $arguments) {
 		$class = $this->_name . $name;
-		App::uses($class, 'Ctk.View/Factory/' . $this->_name . '/Objects/');
+		App::uses($class, ((!empty($this->_plugin))? $this->_plugin . '.' : '') . 'View/Factory/' . $this->_name . '/Objects/');
 		if (!class_exists($class)) {
 			throw new CakeException(sprintf('Unknown object: %s', $class));
 		}
@@ -78,6 +86,15 @@ abstract class CtkFactory extends CtkObject {
  */
 	final public function getName() {
 		return $this->_name;
+	}
+
+/**
+ * Returns the plugin for the current factory.
+ * 
+ * @return string
+ */
+	final public function getPlugin() {
+		return $this->_plugin;
 	}
 
 /**

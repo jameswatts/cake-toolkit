@@ -44,14 +44,14 @@ abstract class CtkView extends CtkObject {
  *
  * @var mixed A single name as a string or a list of names as an array.
  */
-	public $factories = array('Html', 'Css', 'Js');
+	public $factories = array('Ctk.Html', 'Ctk.Css', 'Ctk.Js');
 
 /**
  * The name of the renderer to render the content.
  *
  * @var string The name of the renderer to use.
  */
-	public $renderer = 'Web';
+	public $renderer = 'Ctk.Web';
 
 /**
  * The optional name of a processor to post-process the content.
@@ -136,8 +136,9 @@ abstract class CtkView extends CtkObject {
 	final public function __construct(BaseView $baseView) {
 		$this->_baseView = $baseView;
 		if (is_string($this->renderer)) {
-			$class = $this->renderer . 'Renderer';
-			App::uses($class, 'Ctk.View/Renderer');
+			list($plugin, $name) = pluginSplit($this->renderer);
+			$class = $name . 'Renderer';
+			App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Renderer');
 			if (!class_exists($class)) {
 				throw new CakeException(sprintf('Unknown renderer: %s', $class));
 			}
@@ -146,8 +147,9 @@ abstract class CtkView extends CtkObject {
 			throw new CakeException('No renderer defined');
 		}
 		if (is_string($this->processor)) {
-			$class = $this->processor . 'Processor';
-			App::uses($class, 'Ctk.View/Processor');
+			list($plugin, $name) = pluginSplit($this->processor);
+			$class = $name . 'Processor';
+			App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Processor');
 			if (!class_exists($class)) {
 				throw new CakeException(sprintf('Unknown processor: %s', $class));
 			}
@@ -155,23 +157,23 @@ abstract class CtkView extends CtkObject {
 		}
 		if (is_array($this->factories)) {
 			for ($i = 0; $i < count($this->factories); $i++) {
-				$name = $this->factories[$i];
+				list($plugin, $name) = pluginSplit($this->factories[$i]);
 				$class = $name . 'Factory';
-				App::uses($class, 'Ctk.View/Factory');
+				App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Factory');
 				if (!class_exists($class)) {
 					throw new CakeException(sprintf('Unknown factory: %s', $class));
 				}
-				$this->$name = new $class($name, $this);
+				$this->$name = new $class($name, $plugin, $this);
 				$this->$name->setup();
 			}
 		} else if (is_string($this->factories)) {
-			$name = $this->factories;
+			list($plugin, $name) = pluginSplit($this->factories);
 			$class = $name . 'Factory';
-			App::uses($class, 'Ctk.View/Factory');
+			App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Factory');
 			if (!class_exists($class)) {
 				throw new CakeException(sprintf('Unknown factory: %s', $class));
 			}
-			$this->$name = new $class($name, $this);
+			$this->$name = new $class($name, $plugin, $this);
 			$this->$name->setup();
 		}
 		$helpers = HelperCollection::normalizeObjectArray($this->_baseView->helpers);
@@ -208,13 +210,19 @@ abstract class CtkView extends CtkObject {
  */
 	final public function __set($name, $factory) {
 		if (is_array($this->factories)) {
-			if (in_array($name, $this->factories)) {
+			$factories = array();
+			foreach ($this->factories as $factoryClass) {
+				list($plugin, $factoryName) = pluginSplit($factoryClass);
+				$factories[] = $factoryName;
+			}
+			if (in_array($name, $factories)) {
 				$this->$name = $factory;
 			} else {
 				throw new CakeException(sprintf('Factory not defined: %s', $name));
 			}
 		} else if (is_string($this->factories)) {
-			if ($this->factories == $name) {
+			list($plugin, $factoryName) = pluginSplit($this->factories);
+			if ($factoryName == $name) {
 				$this->$name = $factory;
 			} else {
 				throw new CakeException(sprintf('Factory not defined: %s', $name));

@@ -52,21 +52,14 @@ abstract class CtkRenderer extends CtkObject {
 /**
  * Contructor
  *
- * Creates a new processor with a reference to the current view.
+ * Creates a new renderer with a reference to the current view.
  * 
- * @param string $name The name of the processor.
+ * @param string $name The name of the renderer.
  * @param CtkView $view The current view.
  */
 	final public function __construct($name, CtkView $view) {
 		$this->_name = (string) $name;
 		$this->_view = $view;
-		$blocks = $view->fetchAll();
-		$baseView = $view->getBaseView();
-		foreach ($blocks as $block => $nodes) {
-			foreach ($nodes as $node) {
-				$baseView->append($block, $this->render($node));
-			}
-		}
 	}
 
 /**

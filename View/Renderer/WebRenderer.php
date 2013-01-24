@@ -34,7 +34,8 @@ class WebRenderer extends CtkRenderer {
  * @return string
  */
 	public function render(CtkObject $object) {
-		$path = dirname(__DIR__) . DS . 'Factory' . DS . $object->getFactory()->getName() . DS . 'Templates' . DS . $object->getTemplate() . '.ctp';
+		$plugin = $object->getFactory()->getPlugin();
+		$path = ((!empty($plugin))? APP . 'Plugin' . DS . $plugin . DS . 'View' : dirname(__DIR__)) . DS . 'Factory' . DS . $object->getFactory()->getName() . DS . 'Templates' . DS . $object->getTemplate() . '.ctp';
 		return $object->load($path);
 	}
 }
