@@ -31,7 +31,7 @@ class HtmlView extends CtkView {
  *
  * @var mixed A single name as a string or a list of names as an array.
  */
-	public $factories = 'Html';
+	public $factories = 'Ctk.Html';
 
 /**
  * Defines the object-oriented structure of the view.

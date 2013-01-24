@@ -31,7 +31,7 @@ class IndexView extends CtkView {
  *
  * @var mixed A single name as a string or a list of names as an array.
  */
-	public $factories = array('Html', 'Css', 'Js');
+	public $factories = array('Ctk.Html', 'Ctk.Css', 'Ctk.Js');
 
 /**
  * Defines the object-oriented structure of the view.

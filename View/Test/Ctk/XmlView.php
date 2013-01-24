@@ -12,7 +12,7 @@
  *
  * @copyright     Copyright 2012, James Watts (http://github.com/jameswatts)
  * @link          http://caketoolkit.org Cake Toolkit
- * @package       app.View.Test.Ctk
+ * @package       Ctk.View.Test.Ctk
  * @since         CakePHP(tm) v 2.2.0.0
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -22,7 +22,7 @@ App::uses('CtkView', 'Ctk.View');
 /**
  * XML view.
  *
- * @package       app.View
+ * @package       Ctk.View.Test.Ctk
  */
 class XmlView extends CtkView {
 
@@ -31,7 +31,7 @@ class XmlView extends CtkView {
  *
  * @var mixed A single name as a string or a list of names as an array.
  */
-	public $factories = 'Xml';
+	public $factories = 'Ctk.Xml';
 
 /**
  * The MIME-type of the output content.

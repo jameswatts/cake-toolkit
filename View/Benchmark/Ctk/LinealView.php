@@ -31,7 +31,7 @@ class LinealView extends CtkView {
  *
  * @var mixed A single name as a string or a list of names as an array.
  */
-	public $factories = 'Xml';
+	public $factories = 'Ctk.Xml';
 
 /**
  * The MIME-type of the output content.

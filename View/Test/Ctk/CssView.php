@@ -31,7 +31,7 @@ class CssView extends CtkView {
  *
  * @var mixed A single name as a string or a list of names as an array.
  */
-	public $factories = 'Css';
+	public $factories = 'Ctk.Css';
 
 /**
  * Defines the object-oriented structure of the view.
