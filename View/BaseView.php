@@ -123,6 +123,9 @@ class BaseView extends View {
 		if ($this->hasRendered) {
 			return true;
 		}
+		if ($view) {
+			$this->view = $view;
+		}
 		if (!$this->_helpersLoaded) {
 			$this->loadHelpers();
 		}
