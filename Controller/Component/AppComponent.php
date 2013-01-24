@@ -79,7 +79,9 @@ class AppComponent extends Component {
 			if (is_string($this->layout)) {
 				$controller->layout = $this->layout;
 			} else {
-				$controller->layout = 'Ctk.default';
+				if (!is_string($controller->layout)) {
+					$controller->layout = 'Ctk.default';
+				}
 			}
 			if (is_array($this->cacheAction)) {
 				if (!is_array($controller->cacheAction)) {
