@@ -31,39 +31,39 @@ App::uses('CtkFactoryAdaptor', 'Ctk.Lib');
 class FactoryHelper extends Helper {
 
 /**
- * Base helper settings
+ * Base helper settings.
  *
  * @var array
  */
 	public $settings = array();
 
 /**
- * Reference to the Response object
+ * Reference to the Response object.
  *
  * @var CakeResponse
  */
-	public $response;
+	public $response = null;
 
 /**
- * Reference to the BaseView object
+ * Reference to the BaseView object.
  *
  * @var BaseView
  */
-	protected $_baseView;
+	protected $_baseView = null;
 
 /**
- * Reference to the HelperView object
+ * Reference to the HelperView object.
  *
  * @var HelperView
  */
-	protected $_view;
+	protected $_view = null;
 
 /**
- * Collection of already instanciated CtkFactory objects
+ * Factories defined to use with the helper.
  *
  * @var array
  */
-	protected $_factories;
+	protected $_factories = array();
 
 /**
  * Constructor
@@ -92,27 +92,35 @@ class FactoryHelper extends Helper {
 		}
 		$this->_baseView = new BaseView();
 		$this->_view = new HelperView($this->_baseView);
+		$this->_factories = (empty($settings['factories']))? array() : Hash::normalize((array) $settings['factories']);
+		foreach ($this->_factories as $key => $value) {
+			$isAlias = (is_array($value) && isset($value['className']));
+			list($plugin, $name) = pluginSplit(($isAlias)? $value['className'] : $key);
+			$class = $name . 'Factory';
+			App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Factory');
+			if (!class_exists($class)) {
+				throw new CakeException(sprintf('Unknown factory: %s', $class));
+			}
+			$factory = new $class($name, $plugin, $this->_view);
+			$factory->setup();
+			$property = ($isAlias)? $key : $name;
+			$this->$property = new CtkFactoryAdaptor($factory);
+		}
 	}
 
 /**
- * Loads a CtkFactory object or returns it from the factories collection.
+ * Adds a factory to the helper object.
  *
- * @param string $name The name of the factory.
- * @return FactoryHelper
+ * @param string $name Name of the factory.
+ * @param CtkFactoryAdaptor $factory The factory adaptor object.
+ * @throws CakeException if factory has not been previously included.
  */
-	public function __get($name) {
-		if (isset($this->_factories[$name]) && $this->_factories[$name] instanceof CtkFactoryAdaptor) {
-			return $this->_factories[$name];
+	final public function __set($name, $factory) {
+		if (is_object($factory) && $factory instanceof CtkFactoryAdaptor) {
+			$this->$name = $factory;
+		} else {
+			throw new CakeException(sprintf('Invalid factory: %s', $name));
 		}
-		$class = $name . 'Factory';
-		App::uses($class, 'Ctk.View/Factory');
-		if (!class_exists($class)) {
-			throw new CakeException(sprintf('Unknown factory: %s', $class));
-		}
-		$factory = new $class($name, $this->_view);
-		$factory->setup();
-		$this->_factories[$name] = new CtkFactoryAdaptor($factory);
-		return $this->_factories[$name];
 	}
 }
 

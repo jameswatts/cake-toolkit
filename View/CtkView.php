@@ -23,6 +23,7 @@ App::uses('CtkHelper', 'Ctk.View');
 App::uses('CtkBuildable', 'Ctk.Lib');
 App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
+App::uses('CtkFactory', 'Ctk.Lib');
 App::uses('CtkNode', 'Ctk.Lib');
 App::uses('CtkElement', 'Ctk.Lib');
 
@@ -96,6 +97,13 @@ abstract class CtkView extends CtkObject {
 	protected $_baseView = null;
 
 /**
+ * Factories defined to use with the view.
+ *
+ * @var array
+ */
+	protected $_factories = array();
+
+/**
  * The helpers available.
  *
  * @var array
@@ -155,26 +163,18 @@ abstract class CtkView extends CtkObject {
 			}
 			$this->_processor = new $class($this->processor, $this);
 		}
-		if (is_array($this->factories)) {
-			for ($i = 0; $i < count($this->factories); $i++) {
-				list($plugin, $name) = pluginSplit($this->factories[$i]);
-				$class = $name . 'Factory';
-				App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Factory');
-				if (!class_exists($class)) {
-					throw new CakeException(sprintf('Unknown factory: %s', $class));
-				}
-				$this->$name = new $class($name, $plugin, $this);
-				$this->$name->setup();
-			}
-		} else if (is_string($this->factories)) {
-			list($plugin, $name) = pluginSplit($this->factories);
+		$this->_factories = (empty($this->factories))? array() : Hash::normalize((array) $this->factories);
+		foreach ($this->_factories as $key => $value) {
+			$isAlias = (is_array($value) && isset($value['className']));
+			list($plugin, $name) = pluginSplit(($isAlias)? $value['className'] : $key);
 			$class = $name . 'Factory';
 			App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Factory');
 			if (!class_exists($class)) {
 				throw new CakeException(sprintf('Unknown factory: %s', $class));
 			}
-			$this->$name = new $class($name, $plugin, $this);
-			$this->$name->setup();
+			$property = ($isAlias)? $key : $name;
+			$this->$property = new $class($name, $plugin, $this);
+			$this->$property->setup();
 		}
 		$helpers = HelperCollection::normalizeObjectArray($this->_baseView->helpers);
 		foreach ($helpers as $name => $properties) {
@@ -209,26 +209,10 @@ abstract class CtkView extends CtkObject {
  * @throws CakeException if factory has not been previously included.
  */
 	final public function __set($name, $factory) {
-		if (is_array($this->factories)) {
-			$factories = array();
-			foreach ($this->factories as $factoryClass) {
-				list($plugin, $factoryName) = pluginSplit($factoryClass);
-				$factories[] = $factoryName;
-			}
-			if (in_array($name, $factories)) {
-				$this->$name = $factory;
-			} else {
-				throw new CakeException(sprintf('Factory not defined: %s', $name));
-			}
-		} else if (is_string($this->factories)) {
-			list($plugin, $factoryName) = pluginSplit($this->factories);
-			if ($factoryName == $name) {
-				$this->$name = $factory;
-			} else {
-				throw new CakeException(sprintf('Factory not defined: %s', $name));
-			}
+		if (is_object($factory) && $factory instanceof CtkFactory) {
+			$this->$name = $factory;
 		} else {
-			throw new CakeException(sprintf('Factory not defined: %s', $name));
+			throw new CakeException(sprintf('Invalid factory: %s', $name));
 		}
 	}
 
