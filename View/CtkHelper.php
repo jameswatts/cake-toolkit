@@ -20,6 +20,7 @@
 App::uses('Helper', 'View');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkBuildable', 'Ctk.Lib');
+App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkContent', 'Ctk.Lib');
 App::uses('CtkView', 'Ctk.View');
 
@@ -93,11 +94,16 @@ class CtkHelper extends CtkObject {
  * @param array $arguments The arguments to pass.
  * @return mixed
  */
-	final public function __call($name, $arguments = array()) {
+	final public function __call($name, $arguments) {
+		array_walk_recursive($arguments, function(&$value, $key) {
+			if (is_object($value) && $value instanceof CtkRenderable) {
+				$value = $value->render();
+			}
+		});
 		ob_start();
 		$return = call_user_func_array(array($this->_helper, $name), $arguments);
 		ob_end_clean();
-		return ($return instanceof CtkBuildable)? $return : new CtkContent($this->_view, $return);
+		return ($return instanceof CtkBuildable || $return instanceof CtkRenderable)? $return : new CtkContent($this->_view, $return);
 	}
 }
 
