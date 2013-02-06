@@ -17,6 +17,8 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('Core', 'Configure');
+App::uses('Hash', 'Utility');
 App::uses('Helper', 'View');
 App::uses('BaseView', 'Ctk.View');
 App::uses('HelperView', 'Ctk.View');
