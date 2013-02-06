@@ -17,7 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('Hash', 'Utility');
+App::uses('Set', 'Utility');
 App::uses('HelperCollection', 'View');
 App::uses('BaseView', 'Ctk.View');
 App::uses('CtkHelper', 'Ctk.View');
@@ -164,7 +164,7 @@ abstract class CtkView extends CtkObject {
 			}
 			$this->_processor = new $class($this->processor, $this);
 		}
-		$this->_factories = (empty($this->factories))? array() : Hash::normalize((array) $this->factories);
+		$this->_factories = (empty($this->factories))? array() : Set::normalize((array) $this->factories);
 		foreach ($this->_factories as $key => $value) {
 			$isAlias = (is_array($value) && isset($value['className']));
 			list($plugin, $name) = pluginSplit(($isAlias)? $value['className'] : $key);

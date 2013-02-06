@@ -18,7 +18,7 @@
  */
 
 App::uses('Core', 'Configure');
-App::uses('Hash', 'Utility');
+App::uses('Set', 'Utility');
 App::uses('Helper', 'View');
 App::uses('BaseView', 'Ctk.View');
 App::uses('HelperView', 'Ctk.View');
@@ -94,7 +94,7 @@ class FactoryHelper extends Helper {
 		}
 		$this->_baseView = new BaseView();
 		$this->_view = new HelperView($this->_baseView);
-		$this->_factories = (empty($settings['factories']))? array() : Hash::normalize((array) $settings['factories']);
+		$this->_factories = (empty($settings['factories']))? array() : Set::normalize((array) $settings['factories']);
 		foreach ($this->_factories as $key => $value) {
 			$isAlias = (is_array($value) && isset($value['className']));
 			list($plugin, $name) = pluginSplit(($isAlias)? $value['className'] : $key);
