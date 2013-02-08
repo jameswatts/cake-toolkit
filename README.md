@@ -79,7 +79,7 @@ You can then use the objects within your markup, similar to when using the HTML 
 </div>
 ```
 
-To get up and running quickly check out the [Quick Start](https://github.com/jameswatts/cake-toolkit/wiki/Quick_Start) or [Hello World](https://github.com/jameswatts/cake-toolkit/wiki/Hello_World) tutorials from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki).
+To get up and running quickly check out the [Quick Start](https://github.com/jameswatts/cake-toolkit/wiki/Quick-Start) or [Hello World](https://github.com/jameswatts/cake-toolkit/wiki/Hello-World) tutorials from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki).
 
 Requirements
 ------------
