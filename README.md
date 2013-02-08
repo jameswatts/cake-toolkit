@@ -25,10 +25,14 @@ class ExampleController extends CtkAppController {
 }
 ```
 
-Or, alternatively, using the *AppComponent* for existing controllers:
+Or, alternatively, using the *AppComponent* for existing controllers, which also allows you to *ignore* specific actions to continue using normal ".ctp" views:
 
 ```php
-public $components = array('Ctk.App');
+public $components = array(
+	'Ctk.App' => array(
+		'ignoreAction' => array('example') // allow "example" action to continue using "example.ctp"
+	)
+);
 ```
 
 You can then define your View as a class, and build your UI using the objects made available through the included factories, without requiring extensive knowledge of the underlying technologies, for example:
@@ -36,7 +40,7 @@ You can then define your View as a class, and build your UI using the objects ma
 ```php
 class IndexView extends CtkView {
 
-	public $factories = array('Html', 'Js');
+	public $factories = array('Ctk.Html', 'Ctk.Js');
 
 	public function build() {
 		// create a HTML div
@@ -60,7 +64,11 @@ class IndexView extends CtkView {
 It's also possible to use the special *Factory* helper to import objects from the **Cake Toolkit** into normal static ".ctp" Views, bringing the power of the plugin to your existing View code.
 
 ```php
-public $helpers = array('Ctk.Factory');
+public $helpers = array(
+	'Ctk.Factory' => array(
+		'factories' => array('Ctk.Html', 'Ctk.Css')
+	)
+);
 ```
 
 You can then use the objects within your markup, similar to when using the HTML helper, for example:
@@ -175,7 +183,7 @@ For support, bugs and feature requests, please use the [issues](https://github.c
 Licence
 -------
 
-Copyright 2012 James Watts (CakeDC). All rights reserved.
+Copyright 2012-2013 James Watts (CakeDC). All rights reserved.
 
 Licensed under the MIT License. Redistributions of the source code included in this repository must retain the copyright notice found in each file.
 
