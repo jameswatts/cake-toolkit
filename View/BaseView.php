@@ -40,6 +40,20 @@ class BaseView extends View {
 	public $subDir = 'Ctk';
 
 /**
+ * Name of layout to use with this View.
+ *
+ * @var string
+ */
+	public $layout = 'Ctk.default';
+
+/**
+ * Internal performance statistics.
+ *
+ * @var array
+ */
+	public $stats = array();
+
+/**
  * Reference to the controller.
  *
  * @var CtkController
@@ -59,13 +73,6 @@ class BaseView extends View {
  * @var CtkView
  */
 	protected $_viewObject = null;
-
-/**
- * Name of layout to use with this View.
- *
- * @var string
- */
-	public $layout = 'Ctk.default';
 
 /**
  * Overrides the extension as Cake doesn't allow different $ext between views and layouts.
@@ -169,8 +176,8 @@ class BaseView extends View {
 		include($viewFile);
 		ob_end_clean();
 		if ((int) Configure::read('debug') > 0) {
-			$memoryBefore = memory_get_usage();
-			$startTime = explode(' ', microtime());
+			$this->stats['memoryBefore'] = memory_get_usage();
+			$this->stats['startTime'] = explode(' ', microtime());
 		}
 		$this->_viewClass = Inflector::camelize($this->view) . 'View';
 		$class = $this->_viewClass;
@@ -184,13 +191,13 @@ class BaseView extends View {
 		$content = $this->_viewObject->render();
 		$content = $this->_viewObject->process($content);
 		if ((int) Configure::read('debug') > 0) {
-			$endTime = explode(' ', microtime());
-			$memoryAfter = memory_get_usage();
+			$this->stats['endTime'] = explode(' ', microtime());
+			$this->stats['memoryAfter'] = memory_get_usage();
 			$unit = array('bytes', 'KB', 'MB', 'GB');
-			$renderTime = round(($endTime[1]+$endTime[0])-($startTime[1]+$startTime[0]), 3);
-			$totalMemory = round($memoryAfter/pow(1024, ($i = floor(log($memoryAfter, 1024)))), 2) . $unit[$i];
-			$memoryUsage = round(($memoryAfter-$memoryBefore)/pow(1024, ($i = floor(log(($memoryAfter-$memoryBefore), 1024)))), 2) . $unit[$i];
-			$this->_controller->response->header('Ctk-Info', "controller={$this->_controller->name}, action={$this->view}, render-time={$renderTime}, total-memory={$totalMemory}, memory-usage={$memoryUsage}");
+			$this->stats['renderTime'] = round(($this->stats['endTime'][1]+$this->stats['endTime'][0])-($this->stats['startTime'][1]+$this->stats['startTime'][0]), 3);
+			$this->stats['totalMemory'] = round($this->stats['memoryAfter']/pow(1024, ($i = floor(log($this->stats['memoryAfter'], 1024)))), 2) . $unit[$i];
+			$this->stats['memoryUsage'] = round(($this->stats['memoryAfter']-$this->stats['memoryBefore'])/pow(1024, ($i = floor(log(($this->stats['memoryAfter']-$this->stats['memoryBefore']), 1024)))), 2) . $unit[$i];
+			$this->_controller->response->header('Ctk-Info', 'controller=' . $this->name . ', action=' . $this->view . ', render-time=' . $this->stats['renderTime'] . ', total-memory=' . $this->stats['totalMemory'] . ', memory-usage=' . $this->stats['memoryUsage']);
 		}
 		$this->assign('content', $content);
 		$afterEvent = new CakeEvent('View.afterRenderFile', $this, array($viewFile, $content));
