@@ -228,6 +228,15 @@ abstract class CtkView extends CtkObject {
 	}
 
 /**
+ * Returns the factories for this view.
+ *
+ * @return array
+ */
+	final public function getFactories() {
+		return $this->_factories;
+	}
+
+/**
  * Returns the renderer for this view.
  *
  * @return CtkRenderer
