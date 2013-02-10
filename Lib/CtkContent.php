@@ -70,12 +70,12 @@ class CtkContent extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
- * Returns the name of the factory which created the node.
+ * Returns the factory which created the node.
  *
  * @return string
  */
 	final public function getFactory() {
-		return '';
+		return null;
 	}
 
 /**
