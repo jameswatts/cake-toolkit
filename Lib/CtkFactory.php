@@ -17,6 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('Set', 'Utility');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkView', 'Ctk.View');
 
@@ -26,6 +27,20 @@ App::uses('CtkView', 'Ctk.View');
  * @package       Ctk.Lib
  */
 abstract class CtkFactory extends CtkObject {
+
+/**
+ * Settings for this factory.
+ *
+ * @var array
+ */
+	public $settings = array();
+
+/**
+ * The current view calling the factory.
+ *
+ * @var CtkView The current view.
+ */
+	protected $_view = null;
 
 /**
  * The name of this factory.
@@ -42,24 +57,22 @@ abstract class CtkFactory extends CtkObject {
 	protected $_plugin = null;
 
 /**
- * The current view calling the factory.
- *
- * @var CtkView The current view.
- */
-	protected $_view = null;
-
-/**
  * Contructor
  *
  * Creates a new factory with a reference to the current view.
  * 
- * @param string $name The name of the factory.
  * @param CtkView $view The current view.
+ * @param string $name The name of the factory.
+ * @param string $plugin The name of the plugin if it exists.
+ * @param array $settings Configuration settings for the factory.
  */
-	final public function __construct($name, $plugin, CtkView $view) {
+	final public function __construct(CtkView $view, $name, $plugin = null, $settings = null) {
+		$this->_view = $view;
 		$this->_name = (string) $name;
 		$this->_plugin = (string) $plugin;
-		$this->_view = $view;
+		if ($settings) {
+			$this->settings = Set::merge($this->settings, (array) $settings);
+		}
 	}
 
 /**
@@ -80,6 +93,15 @@ abstract class CtkFactory extends CtkObject {
 	}
 
 /**
+ * Returns the view object for this factory.
+ * 
+ * @return CtkView
+ */
+	final public function getView() {
+		return $this->_view;
+	}
+
+/**
  * Returns the name of the current factory.
  * 
  * @return string
@@ -95,15 +117,6 @@ abstract class CtkFactory extends CtkObject {
  */
 	final public function getPlugin() {
 		return $this->_plugin;
-	}
-
-/**
- * Returns the view object for this factory.
- * 
- * @return CtkView
- */
-	final public function getView() {
-		return $this->_view;
 	}
 
 /**

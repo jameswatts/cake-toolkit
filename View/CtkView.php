@@ -174,7 +174,7 @@ abstract class CtkView extends CtkObject {
 				throw new CakeException(sprintf('Unknown factory: %s', $class));
 			}
 			$property = ($isAlias)? $key : $name;
-			$this->$property = new $class($name, $plugin, $this);
+			$this->$property = new $class($this, $name, $plugin, $value);
 			$this->$property->setup();
 		}
 		$helpers = HelperCollection::normalizeObjectArray($this->_baseView->helpers);

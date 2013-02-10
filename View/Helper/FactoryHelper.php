@@ -89,12 +89,12 @@ class FactoryHelper extends Helper {
 		} else {
 			$this->response = new CakeResponse(array('charset' => Configure::read('App.encoding')));
 		}
-		if (!empty($settings['configFile'])) {
-			$this->loadConfig($settings['configFile']);
+		if (!empty($this->settings['configFile'])) {
+			$this->loadConfig($this->settings['configFile']);
 		}
 		$this->_baseView = new BaseView();
 		$this->_view = new HelperView($this->_baseView);
-		$this->_factories = (empty($settings['factories']))? array() : Set::normalize((array) $settings['factories']);
+		$this->_factories = (empty($this->settings['factories']))? array() : Set::normalize((array) $this->settings['factories']);
 		foreach ($this->_factories as $key => $value) {
 			$isAlias = (is_array($value) && isset($value['className']));
 			list($plugin, $name) = pluginSplit(($isAlias)? $value['className'] : $key);
@@ -103,7 +103,7 @@ class FactoryHelper extends Helper {
 			if (!class_exists($class)) {
 				throw new CakeException(sprintf('Unknown factory: %s', $class));
 			}
-			$factory = new $class($name, $plugin, $this->_view);
+			$factory = new $class($this->_view, $name, $plugin, $value);
 			$factory->setup();
 			$property = ($isAlias)? $key : $name;
 			$this->$property = new CtkFactoryAdaptor($factory);

@@ -189,7 +189,7 @@ This will output the View as an abstract XML schema of the factories and objects
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <ctk xmlns:Html="http://caketoolkit.org/schema/Html">
-	<request address="127.0.0.1" method="GET" host="cakephp" url="/example/index"/>
+	<request address="127.0.0.1" method="GET" host="example.com" url="/example/index"/>
 	<response controller="Example" action="index" layout="Ctk.Xml/schema" content-type="text/xml" charset="UTF-8"/>
 	<schema>
 		<Html:Div plugin="Ctk" template="div" text="">
