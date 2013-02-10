@@ -18,6 +18,7 @@
  */
 
 App::uses('CtkObject', 'Ctk.Lib');
+App::uses('CtkFactory', 'Ctk.Lib');
 App::uses('CtkRenderer', 'Ctk.Lib');
 App::uses('CtkBuildable', 'Ctk.Lib');
 App::uses('CtkNode', 'Ctk.Lib');
@@ -28,6 +29,25 @@ App::uses('CtkNode', 'Ctk.Lib');
  * @package       Ctk.Lib
  */
 class SchemaRenderer extends CtkRenderer {
+
+/**
+ * Renders the children of an object as nodes.
+ * 
+ * @param CtkObject $object The object being rendered.
+ * @return string
+ */
+	protected function _renderChildren(CtkObject $object) {
+		$content = '';
+		$children = $object->getChildren();
+		foreach ($children as $child) {
+			$node = $child->render();
+			if (!$child->getFactory()) {
+				$node = '<![CDATA[' . $node . ']]>';
+			}
+			$content .= $node;
+		}
+		return $content;
+	}
 
 /**
  * Renders the params as attributes of a node.
@@ -45,7 +65,7 @@ class SchemaRenderer extends CtkRenderer {
 		if ($object instanceof CtkNode) {
 			$params = $object->getParams();
 			foreach ($params as $param => $value) {
-				$attributes .= ' ' . $param . '="' . str_replace('"', '\"', $value) . '"';
+				$attributes .= ' ' . $param . '="' . htmlentities($value, ENT_COMPAT, 'UTF-8') . '"';
 			}
 		}
 		return $attributes;
@@ -65,8 +85,8 @@ class SchemaRenderer extends CtkRenderer {
 		$factory = $object->getFactory()->getName();
 		$class = str_replace($factory, '', get_class($object));
 		if ($object instanceof CtkBuildable && $object->hasChildren()) {
-			$node  = '<' . $factory . ':' . $class . $this->_renderAttributes($object) . '>';
-			$node .= $object->renderChildren();
+			$node = '<' . $factory . ':' . $class . $this->_renderAttributes($object) . '>';
+			$node .= $this->_renderChildren($object);
 			return $node . '</' . $factory . ':' . $class . '>';
 		} else {
 			return '<' . $factory . ':' . $class . $this->_renderAttributes($object) . '/>';

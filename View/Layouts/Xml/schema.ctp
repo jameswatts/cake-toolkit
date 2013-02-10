@@ -28,7 +28,7 @@ foreach ($factories as $factory => $settings) {
 }
 ?>
 <ctk<?php echo $namespaces; ?>>
-	<request address="<?php echo $this->request->clientIp(); ?>" method="<?php echo $this->request->method(); ?>" host="<?php echo $this->request->host(); ?>" url="<?php echo $this->request->here(); ?>"/>
+	<request address="<?php echo $this->request->clientIp(); ?>" method="<?php echo $this->request->method(); ?>" host="<?php echo $this->request->host(); ?>" url="<?php echo htmlspecialchars($this->request->here(), ENT_COMPAT, 'UTF-8'); ?>"/>
 	<response controller="<?php echo $this->name; ?>" action="<?php echo $this->view; ?>" layout="Ctk.Xml/schema" content-type="text/xml" charset="UTF-8"/>
 	<schema>
 		<?php echo $this->fetch('content'); ?>
