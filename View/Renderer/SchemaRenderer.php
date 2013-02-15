@@ -65,6 +65,17 @@ class SchemaRenderer extends CtkRenderer {
 		if ($object instanceof CtkNode) {
 			$params = $object->getParams();
 			foreach ($params as $param => $value) {
+				if (is_null($value)) {
+					$value = 'NULL';
+				} else if (is_bool($value)) {
+					$value = ($value)? 'TRUE' : 'FALSE';
+				} else if (is_array($value)) {
+					$value = json_encode($value);
+				} else if (is_object($value)) {
+					$value = '{' . get_class($value) . ' Object}';
+				} else {
+					$value = (string) $value;
+				}
 				$attributes .= ' ' . $param . '="' . htmlentities($value, ENT_COMPAT, 'UTF-8') . '"';
 			}
 		}
