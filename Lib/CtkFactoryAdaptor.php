@@ -46,13 +46,22 @@ class CtkFactoryAdaptor extends CtkObject {
 	}
 
 /**
- * Returns a node as an object.
+ * Gets a property of the CtkFactory object.
  *
- * @param string $name The name of the node.
- * @return CtkNode
+ * @param string $name The name of the property.
+ * @return mixed
  */
 	public function __get($name) {
-		return call_user_func_array(array($this->_factory, $name), array());
+		return $this->_factory->$name;
+	}
+
+/**
+ * Sets a property on the CtkFactory object.
+ *
+ * @param string $name The name of the property.
+ */
+	public function __set($name, $value = null) {
+		$this->_factory->$name = $value;
 	}
 
 /**
@@ -60,11 +69,10 @@ class CtkFactoryAdaptor extends CtkObject {
  *
  * @param string $name The method name.
  * @param string $arguments The method arguments.
- * @return mixed
+ * @return CtkNode
  */
 	public function __call($name, $arguments) {
-		$object = call_user_func_array(array($this->_factory, $name), $arguments);
-		return $object->render();
+		return call_user_func_array(array($this->_factory, $name), $arguments);
 	}
 }
 
