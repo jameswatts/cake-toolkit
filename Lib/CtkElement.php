@@ -202,20 +202,18 @@ class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
  * Returns the first child node of this node.
  *
  * @return CtkBuildable
- * @throws CakeException if node has no children.
  */
 	final public function getFirst() {
-		throw new CakeException('Node has no children');
+		return null;
 	}
 
 /**
  * Returns the last child node of this node.
  *
  * @return CtkBuildable
- * @throws CakeException if node has no children.
  */
 	final public function getLast() {
-		throw new CakeException('Node has no children');
+		return null;
 	}
 
 /**
