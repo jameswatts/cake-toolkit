@@ -17,6 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
 
 /**
@@ -24,7 +25,7 @@ App::uses('CtkObject', 'Ctk.Lib');
  *
  * @package       Ctk.Lib
  */
-abstract class CtkEvent extends CtkObject {
+abstract class CtkEvent extends CtkObject implements CtkRenderable {
 
 /**
  * The factory used to instanciate this event.
@@ -139,11 +140,16 @@ abstract class CtkEvent extends CtkObject {
  *
  * @param string $path Path to the template.
  * @return string
+ * @throws CakeException if template is not found.
  */
 	final public function load($path) {
-		ob_start();
-		require $path;
-		return ob_get_clean();
+		if (is_file($path) && is_readable($path)) {
+			ob_start();
+			require $path;
+			return ob_get_clean();
+		} else {
+			throw new CakeException(sprintf('Template not found: %s', $path));
+		}
 	}
 
 /**
@@ -153,6 +159,15 @@ abstract class CtkEvent extends CtkObject {
  */
 	final public function render() {
 		return $this->_factory->getView()->getRenderer()->render($this);
+	}
+
+/**
+ * Renders the child nodes of this event.
+ *
+ * @return string
+ */
+	final public function renderChildren() {
+		return '';
 	}
 }
 
