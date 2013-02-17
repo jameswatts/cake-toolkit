@@ -135,6 +135,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
  *
  * @param string $name Name of the configuration parameter.
  * @return mixed
+ * @throws CakeException if the configuration parameter is undefined.
  */
 	final public function __get($name) {
 		if (isset($this->_params[(string) $name])) {
@@ -241,6 +242,24 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
+ * Determines if the node allows a parent node.
+ *
+ * @return boolean
+ */
+	final public function allowsParent() {
+		return $this->_allowParent;
+	}
+
+/**
+ * Determines if the node has a parent node.
+ *
+ * @return boolean
+ */
+	final public function hasParent() {
+		return ($this->_parentNode !== null);
+	}
+
+/**
  * Returns the parent node of this node.
  *
  * @return CtkBuildable
@@ -254,7 +273,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
  *
  * @param CtkBuildable $node The parent node.
  * @return CtkBuildable
- * @throws CakeException if node is not allowed a parent.
+ * @throws CakeException if node is not allowed a parent or the parent node class is not allowed.
  */
 	final public function setParent(CtkBuildable $node = null) {
 		if (!$this->_allowParent) {
@@ -268,12 +287,35 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
+ * Determines if the node is allowed children.
+ *
+ * @return boolean
+ */
+	final public function allowsChildren() {
+		return $this->_allowChildren;
+	}
+
+/**
  * Determines if the node has child nodes.
  *
  * @return boolean
  */
 	final public function hasChildren() {
 		return (count($this->_childNodes) > 0);
+	}
+
+/**
+ * Determines if a node is a child of this node.
+ *
+ * @return boolean
+ */
+	final public function hasChild(CtkBuildable $node) {
+		for ($i = 0; $i < count($this->_childNodes); $i++) {
+			if ($this->_childNodes[$i] === $node) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 /**
@@ -289,28 +331,60 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
  * Returns the first child node of this node.
  *
  * @return CtkBuildable
- * @throws CakeException if node has no children.
  */
 	final public function getFirst() {
 		if ($this->hasChildren()) {
 			return $this->_childNodes[0];
-		} else {
-			throw new CakeException(sprintf('Node %s has no children', get_class($this)));
 		}
+		return null;
 	}
 
 /**
  * Returns the last child node of this node.
  *
  * @return CtkBuildable
- * @throws CakeException if node has no children.
  */
 	final public function getLast() {
 		if ($this->hasChildren()) {
 			return $this->_childNodes[count($this->_childNodes)-1];
-		} else {
-			throw new CakeException(sprintf('Node %s has no children', get_class($this)));
 		}
+		return null;
+	}
+
+/**
+ * Returns the previous node before this node in the common parent.
+ *
+ * @return CtkBuildable
+ */
+	final public function getPrevious() {
+		$children = $this->getParent()->getChildren();
+		$count = count($children);
+		if ($count > 1) {
+			for ($i = 0; $i < $count; $i++) {
+				if ($children[$i] === $this) {
+					return ($i < 1)? null : $children[$i-1];
+				}
+			}
+		}
+		return null;
+	}
+
+/**
+ * Returns the next node after this node in the common parent.
+ *
+ * @return CtkBuildable
+ */
+	final public function getNext() {
+		$children = $this->getParent()->getChildren();
+		$count = count($children);
+		if ($count > 1) {
+			for ($i = 0; $i < $count; $i++) {
+				if ($children[$i] === $this) {
+					return ($i == $count-1)? null : $children[$i+1];
+				}
+			}
+		}
+		return null;
 	}
 
 /**
@@ -322,21 +396,183 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
  */
 	final public function add(CtkBuildable $node) {
 		if ($this->_allowChildren) {
-			if (is_array($this->_limitChildren) && count($this->_limitChildren) > 0) {
-				if (in_array(get_class($node), $this->_limitChildren)) {
+			if (!$this->hasChild($node)) {
+				if (is_array($this->_limitChildren) && count($this->_limitChildren) > 0) {
+					if (in_array(get_class($node), $this->_limitChildren)) {
+						$node->setParent($this);
+						$this->_childNodes[] = $node;
+					} else {
+						throw new CakeException(sprintf('Invalid child %s for %s, must be: %s', get_class($node), get_class($this), implode(', ', $this->_limitChildren)));
+					}
+				} else {
 					$node->setParent($this);
 					$this->_childNodes[] = $node;
-				} else {
-					throw new CakeException(sprintf('Invalid child %s for %s, must be: %s', get_class($node), get_class($this), implode(', ', $this->_limitChildren)));
 				}
-			} else {
-				$node->setParent($this);
-				$this->_childNodes[] = $node;
 			}
 			return $node;
 		} else {
 			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 		}
+	}
+
+/**
+ * Adds a node before the specified node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @param CtkBuildable $before Node to add before.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child or this node does not allow children.
+ */
+	final public function addBefore(CtkBuildable $node, CtkBuildable $before) {
+		if ($this->_allowChildren) {
+			if ($this->hasChild($node)) {
+				$this->removeChild($node);
+			}
+			for ($i = 0; $i < count($this->_childNodes); $i++) {
+				if ($this->_childNodes[$i] === $before) {
+					array_splice($this->_childNodes, $i-1, 0, $node);
+					return $node;
+				}
+			}
+			throw new CakeException(sprintf('Unknown child %s', get_class($before)));
+		} else {
+			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+		}
+	}
+
+/**
+ * Adds a node after the specified node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @param CtkBuildable $after Node to add after.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child or this node does not allow children.
+ */
+	final public function addAfter(CtkBuildable $node, CtkBuildable $after) {
+		if ($this->_allowChildren) {
+			if ($this->hasChild($node)) {
+				$this->removeChild($node);
+			}
+			for ($i = 0; $i < count($this->_childNodes); $i++) {
+				if ($this->_childNodes[$i] === $after) {
+					array_splice($this->_childNodes, $i+1, 0, $node);
+					return $node;
+				}
+			}
+			throw new CakeException(sprintf('Unknown child %s', get_class($after)));
+		} else {
+			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+		}
+	}
+
+/**
+ * Adds an array of nodes to this node as children.
+ *
+ * @param array $nodes The child nodes.
+ * @return CtkBuildable
+ * @throws CakeException if this node does not allow children.
+ */
+	final public function addMany(array $nodes) {
+		if ($this->_allowChildren) {
+			foreach ($nodes as &$node) {
+				$this->add($node);
+			}
+			return $this;
+		} else {
+			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+		}
+	}
+
+/**
+ * Inherits the children of another node.
+ *
+ * @param CtkBuildable $node The node to inherit from.
+ * @param boolean $prepend Nodes should be added before existing children.
+ * @return CtkBuildable
+ * @throws CakeException if this node does not allow children.
+ */
+	final public function addFrom(CtkBuildable $node, $prepend = false) {
+		if ($this->_allowChildren) {
+			$children = $node->getChildren();
+			$count = count($children);
+			if ($prepend && $count > 0) {
+				$first = $node->getFirst();
+				for ($i = $count-1; $i >= 0; $i--) {
+					$first = $this->addBefore($children[$i], $first);
+				}
+			} else {
+				for ($i = 0; $i < $count; $i++) {
+					$this->add($children[$i]);
+				}
+			}
+			return $this;
+		} else {
+			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+		}
+	}
+
+/**
+ * Replaces the specified node with the given node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @param CtkBuildable $replace Node to replace.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child.
+ */
+	final public function replaceChild(CtkBuildable $node, CtkBuildable $replace) {
+		if (!$this->hasChild($replace)) {
+			throw new CakeException(sprintf('Unknown child %s', get_class($replace)));
+		}
+		if ($this->hasChild($node)) {
+			$this->removeChild($node);
+		}
+		for ($i = 0; $i < count($this->_childNodes); $i++) {
+			if ($this->_childNodes[$i] === $replace) {
+				$replace->setParent(null);
+				$this->_childNodes[$i] = $node;
+				return $this;
+			}
+		}
+	}
+
+/**
+ * Removes and returns a child node from this node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child.
+ */
+	final public function removeChild(CtkBuildable $node) {
+		for ($i = 0; $i < count($this->_childNodes); $i++) {
+			if ($this->_childNodes[$i] === $node) {
+				$node->setParent(null);
+				array_splice($this->_childNodes, $i, 1);
+				return $node;
+			}
+		}
+		throw new CakeException(sprintf('Unknown child %s', get_class($node)));
+	}
+
+/**
+ * Removes all children from this node.
+ *
+ * @return CtkBuildable
+ */
+	final public function clearChildren() {
+		foreach ($this->_childNodes as &$node) {
+			$node->setParent(null);
+		}
+		$this->_childNodes = array();
+		return $this;
+	}
+
+/**
+ * Determines if the node is allowed events.
+ *
+ * @return boolean
+ */
+	final public function allowsEvents() {
+		return $this->_allowEvents;
 	}
 
 /**
@@ -371,6 +607,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
  * @param string $type The event type.
  * @param CtkEvent $event The event object.
  * @return CtkBuildable
+ * @throws CakeException if events are not allowed on this node.
  */
 	final public function addEvent($type, CtkEvent $event) {
 		if ($this->_allowEvents) {
@@ -414,6 +651,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
  *
  * @param string $path Path to the template.
  * @return string
+ * @throws CakeException if template is not found.
  */
 	final public function load($path) {
 		if (is_file($path) && is_readable($path)) {

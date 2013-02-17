@@ -125,6 +125,24 @@ class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
+ * Determines if the node allows a parent node.
+ *
+ * @return boolean
+ */
+	final public function allowsParent() {
+		return true;
+	}
+
+/**
+ * Determines if the node has a parent node.
+ *
+ * @return boolean
+ */
+	final public function hasParent() {
+		return ($this->_parentNode !== null);
+	}
+
+/**
  * Returns the parent node of this node.
  *
  * @return CtkBuildable
@@ -145,11 +163,29 @@ class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
+ * Determines if the node is allowed children.
+ *
+ * @return boolean
+ */
+	final public function allowsChildren() {
+		return false;
+	}
+
+/**
  * Determines if the node has child nodes.
  *
  * @return boolean
  */
 	final public function hasChildren() {
+		return false;
+	}
+
+/**
+ * Determines if a node is a child of this node.
+ *
+ * @return boolean
+ */
+	final public function hasChild(CtkBuildable $node) {
 		return false;
 	}
 
@@ -212,27 +248,91 @@ class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
- * Adds a node to this node as a child before the child node specified.
+ * Adds a node before the specified node.
  *
  * @param CtkBuildable $node Child node.
- * @param CtkBuildable $before Reference child node.
+ * @param CtkBuildable $before Node to add before.
  * @return CtkBuildable
- * @throws CakeException if the reference child node does not exist, the child node class is not allowed or this node does not allow children.
+ * @throws CakeException if the specified node is not a child or this node does not allow children.
  */
 	final public function addBefore(CtkBuildable $node, CtkBuildable $before) {
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
+ * Adds a node after the specified node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @param CtkBuildable $after Node to add after.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child or this node does not allow children.
+ */
+	final public function addAfter(CtkBuildable $node, CtkBuildable $after) {
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
+ * Adds an array of nodes to this node as children.
+ *
+ * @param array $nodes The child nodes.
+ * @return CtkBuildable
+ * @throws CakeException if this node does not allow children.
+ */
+	final public function addMany(array $nodes) {
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
+ * Inherits the children of another node.
+ *
+ * @param CtkBuildable $node The node to inherit from.
+ * @param boolean $prepend Nodes should be added before existing children.
+ * @return CtkBuildable
+ * @throws CakeException if this node does not allow children.
+ */
+	final public function addFrom(CtkBuildable $node, $prepend = false) {
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
+ * Replaces the specified node with the given node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @param CtkBuildable $replace Node to replace.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child.
+ */
+	final public function replaceChild(CtkBuildable $node, CtkBuildable $replace) {
+		throw new CakeException(sprintf('Unknown child %s', get_class($replace)));
+	}
+
+/**
+ * Removes and returns a child node from this node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child.
+ */
+	final public function removeChild(CtkBuildable $node) {
+		throw new CakeException(sprintf('Unknown child %s', get_class($node)));
+	}
+
+/**
+ * Removes all children from this node.
+ *
+ * @return CtkBuildable
+ */
+	final public function clearChildren() {
 		return $this;
 	}
 
 /**
- * Adds a node to this node as a child after the child node specified.
+ * Determines if the node is allowed events.
  *
- * @param CtkBuildable $node Child node.
- * @param CtkBuildable $before Reference child node.
- * @return CtkBuildable
- * @throws CakeException if the reference child node does not exist, the child node class is not allowed or this node does not allow children.
+ * @return boolean
  */
-	final public function addAfter(CtkBuildable $node, CtkBuildable $after) {
-		return $this;
+	final public function allowsEvents() {
+		return false;
 	}
 
 /**
