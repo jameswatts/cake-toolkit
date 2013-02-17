@@ -166,6 +166,17 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
+ * Requests an instance of an object on the common factory.
+ *
+ * @param string $name Name of object to create.
+ * @param array $arguments The method arguments.
+ * @return CtkBuildable
+ */
+	final public function __call($name, $arguments) {
+		return $this->add(call_user_func_array(array($this->_factory, $name), $arguments));
+	}
+
+/**
  * Renders the node if called as a string.
  *
  * @return string
@@ -474,8 +485,16 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
  */
 	final public function addMany(array $nodes) {
 		if ($this->_allowChildren) {
-			foreach ($nodes as &$node) {
-				$this->add($node);
+			foreach ($nodes as $name => &$node) {
+				if ($node instanceof CtkBuildable) {
+					$this->add($node);
+				} else if (is_string($node)) {
+					$this->$node();
+				} else if (is_array($node)) {
+					$this->add(call_user_func_array(array($this->_factory, $name), array($node)));
+				} else {
+					throw new CakeException(sprintf('Unknown child %s', (is_object($node))? get_class($node) : (string) $node));
+				}
 			}
 			return $this;
 		} else {
