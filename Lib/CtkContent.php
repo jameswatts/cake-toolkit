@@ -297,57 +297,6 @@ class CtkContent extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
- * Determines if any event types or a specific event type has been set.
- *
- * @param string $type The event type.
- * @return boolean
- */
-	final public function hasEvents($type = null) {
-		return false;
-	}
-
-/**
- * Returns the events for a specific event type.
- *
- * @param string $type The event type.
- * @return array
- */
-	final public function getEvents($type) {
-		return array();
-	}
-
-/**
- * Adds an event to the node.
- *
- * @param string $type The event type.
- * @param CtkEvent $event The event object.
- * @return CtkBuildable
- */
-	final public function addEvent($type, CtkEvent $event) {
-		throw new CakeException('Cannot add events to node');
-	}
-
-/**
- * Removes a previously set event from the element.
- *
- * @param string $type The event type.
- * @return CtkBuildable
- */
-	final public function removeEvents($type) {
-		return $this;
-	}
-
-/**
- * Removes all events previously set on the element.
- *
- * @param string $type The event type.
- * @return CtkBuildable
- */
-	final public function clearEvents($type = null) {
-		return $this;
-	}
-
-/**
  * Loads the template for the node.
  *
  * @param string $path Path to the template.
