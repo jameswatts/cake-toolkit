@@ -17,7 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
-App::uses('CtkEvent', 'Ctk.Lib')
+App::uses('CtkEvent', 'Ctk.Lib');
 
 /**
  * Interface for bindable objects.
