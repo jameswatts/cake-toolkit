@@ -77,6 +77,21 @@ abstract class CtkView extends CtkObject {
 	public $charset = 'UTF-8';
 
 /**
+ * Name of the layout to use.
+ *
+ * @var string
+ */
+	public $layout = null;
+
+/**
+ * Turns on or off Cake's conventional mode of applying layout files. On by default.
+ * Setting to off means that layouts will not be automatically applied to rendered views.
+ *
+ * @var boolean
+ */
+	public $autoLayout = true;
+
+/**
  * The instance of the content renderer.
  *
  * @var CtkRenderer
@@ -182,6 +197,12 @@ abstract class CtkView extends CtkObject {
 			list($plugin, $class) = pluginSplit($properties['class']);
 			$this->_helpers[$class] = new CtkHelper($class, $this->_baseView->Helpers->load($properties['class'], $properties['settings']), $this);
 		}
+		if (is_string($this->layout)) {
+			$this->_baseView->layout = $this->layout;
+		}
+		if (!$this->autoLayout) {
+			$this->_baseView->autoLayout = false;
+		}
 		$this->build();
 	}
 
@@ -264,10 +285,46 @@ abstract class CtkView extends CtkObject {
 	}
 
 /**
+ * Returns the request object.
+ *
+ * @return CakeRequest
+ */
+	final public function getRequest() {
+		return $this->_baseView->request;
+	}
+
+/**
+ * Returns the response object.
+ *
+ * @return CakeResponse
+ */
+	final public function getResponse() {
+		return $this->_baseView->response;
+	}
+
+/**
+ * Returns the arguments sent with the URL.
+ *
+ * @return array
+ */
+	final public function getArguments() {
+		return $this->_baseView->passedArgs;
+	}
+
+/**
+ * Returns the current errors for the model validation.
+ *
+ * @return array
+ */
+	final public function getValidationErrors() {
+		return $this->_baseView->validationErrors;
+	}
+
+/**
  * Adds a node to the children of the view object.
  *
  * @param CtkBuildable $node The node object, must be buildable.
- * @return CtkNode
+ * @return CtkBuildable
  */
 	final public function add(CtkBuildable $node) {
 		$node->setParent(null);
