@@ -18,7 +18,7 @@
  */
 
 /**
- * Interface for buildable objects..
+ * Interface for buildable objects.
  *
  * @package       Ctk.Lib
  */
@@ -161,46 +161,4 @@ interface CtkBuildable {
  * @return CtkBuildable
  */
 	public function clearChildren();
-
-/**
- * Determines if any event types or a specific event type has been set.
- *
- * @param string $type The event type.
- * @return boolean
- */
-	public function hasEvents($type = null);
-
-/**
- * Returns the events for a specific event type.
- *
- * @param string $type The event type.
- * @return array
- */
-	public function getEvents($type);
-
-/**
- * Adds an event to the node.
- *
- * @param string $type The event type.
- * @param CtkEvent $event The event object.
- * @return CtkBuildable
- */
-	public function addEvent($type, CtkEvent $event);
-
-/**
- * Removes a previously set event from the element.
- *
- * @param string $type The event type.
- * @return CtkBuildable
- */
-	public function removeEvents($type);
-
-/**
- * Removes all events previously set on the element.
- *
- * @param string $type The event type.
- * @return CtkBuildable
- */
-	public function clearEvents($type = null);
 }
-
