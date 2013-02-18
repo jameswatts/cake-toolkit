@@ -24,6 +24,19 @@
  */
 abstract class CtkObject extends Object {
 
-	
+/**
+ * Gets an instance of the current class.
+ *
+ * @param array $arguments Optional arguments for the class constructor.
+ * @return CtkObject
+ */
+	final public static function getInstance(array $arguments = null) {
+		if (is_array($arguments)) {
+			$class = new ReflectionClass(get_called_class());
+			return $class->newInstanceArgs($arguments);
+		} else {
+			return new static();
+		}
+	}
 }
 
