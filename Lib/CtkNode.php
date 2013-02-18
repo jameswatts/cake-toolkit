@@ -18,6 +18,7 @@
  */
 
 App::uses('CtkBuildable', 'Ctk.Lib');
+App::uses('CtkBindable', 'Ctk.Lib');
 App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkFactory', 'Ctk.Lib');
@@ -28,7 +29,7 @@ App::uses('CtkEvent', 'Ctk.Lib');
  *
  * @package       Ctk.Lib
  */
-abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
+abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,CtkRenderable {
 
 /**
  * The factory used to instanciate this object.
@@ -595,7 +596,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
- * Determines if any event types or a specific event type has been set.
+ * Determines if any event types or a specific event type has been bound.
  *
  * @param string $type The event type.
  * @return boolean
@@ -621,24 +622,24 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
- * Adds an event to the node.
+ * Binds an event to the node.
  *
  * @param string $type The event type.
  * @param CtkEvent $event The event object.
  * @return CtkBuildable
  * @throws CakeException if events are not allowed on this node.
  */
-	final public function addEvent($type, CtkEvent $event) {
+	final public function bind($type, CtkEvent $event) {
 		if ($this->_allowEvents) {
 			$this->_events[strtolower($type)][] = $event;
 			return $this;
 		} else {
-			throw new CakeException('Cannot add events to node');
+			throw new CakeException('Cannot bind event to node');
 		}
 	}
 
 /**
- * Removes a previously set event from the element.
+ * Removes a previously bound event from the node.
  *
  * @param string $type The event type.
  * @return CtkBuildable
@@ -649,7 +650,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
- * Removes all events previously set on the element.
+ * Removes all events previously bound to the node.
  *
  * @param string $type The event type.
  * @return CtkBuildable
