@@ -49,8 +49,8 @@ class IndexView extends CtkView {
 			$button = $this->Html->Button(array(
 				'value' => __('Click Me')
 			));
-			// add an event to the button
-			$button->addEvent('click', $this->Js->Alert(array(
+			// bind an event to the button
+			$button->bind('click', $this->Js->Alert(array(
 				'text' => __('Hello World')
 			)));
 		// add the button to the div
@@ -159,7 +159,7 @@ The following table shows a basic performance scalability benchmark based on the
 
 These tests were performed on a Intel Pentium laptop using 4 GB of RAM, with the maximum memory setting of *PHP* set to 128 MB.
 
-**IMPORTANT:** Remember that caching is NOT enabled on this controller, as viewing the changes to the action's output is vital to purpose of its use. Turning on the cache for an action of a **CTK** Controller is almost identical in performance to that of a standard static ".ctp" View, as the plugin uses the same routing for the cached files.
+**IMPORTANT:** Remember that caching is NOT enabled on this controller, as viewing the changes to the action's output is vital to the purpose of its use. Turning on the cache for an action of a **CTK** Controller is almost identical in performance to that of a standard static ".ctp" View, as the plugin uses the same routing for the cached files.
 
 Debugging
 ---------
