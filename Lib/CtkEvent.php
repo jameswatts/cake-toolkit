@@ -17,6 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CtkBindable', 'Ctk.Lib');
 App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
 
@@ -133,6 +134,18 @@ abstract class CtkEvent extends CtkObject implements CtkRenderable {
  */
 	final public function getParams() {
 		return $this->_params;
+	}
+
+/**
+ * Binds the event to the specified node.
+ *
+ * @param string $type The event type.
+ * @param CtkBindable $node The node to bind to.
+ * @return CtkEvent
+ */
+	final public function bindTo($type, CtkBindable $node) {
+		$node->bind($type, $this);
+		return $this;
 	}
 
 /**
