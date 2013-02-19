@@ -93,6 +93,7 @@ class FactoryHelper extends Helper {
 			$this->loadConfig($this->settings['configFile']);
 		}
 		$this->_baseView = new BaseView();
+		$this->_baseView->viewVars = $this->_View->viewVars;
 		$this->_view = new HelperView($this->_baseView);
 		$this->_factories = (empty($this->settings['factories']))? array() : Set::normalize((array) $this->settings['factories']);
 		foreach ($this->_factories as $key => $value) {
