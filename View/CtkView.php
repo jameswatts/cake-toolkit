@@ -19,7 +19,7 @@
 
 App::uses('Set', 'Utility');
 App::uses('HelperCollection', 'View');
-App::uses('BaseView', 'Ctk.View');
+App::uses('CtkBaseView', 'Ctk.View');
 App::uses('CtkHelper', 'Ctk.View');
 App::uses('CtkBuildable', 'Ctk.Lib');
 App::uses('CtkRenderable', 'Ctk.Lib');
@@ -46,7 +46,7 @@ abstract class CtkView extends CtkObject {
  *
  * @var mixed A single name as a string or a list of names as an array.
  */
-	public $factories = array('Ctk.Html', 'Ctk.Css', 'Ctk.Js');
+	public $factories = array();
 
 /**
  * The name of the renderer to render the content.
@@ -77,6 +77,13 @@ abstract class CtkView extends CtkObject {
 	public $charset = 'UTF-8';
 
 /**
+ * Theme name.
+ *
+ * @var string
+ */
+	public $theme = null;
+
+/**
  * Name of the layout to use.
  *
  * @var string
@@ -90,6 +97,32 @@ abstract class CtkView extends CtkObject {
  * @var boolean
  */
 	public $autoLayout = true;
+
+/**
+ * The Cache configuration View will use to store cached elements. Changing this will change
+ * the default configuration elements are stored under. You can also choose a cache config
+ * per element.
+ *
+ * @var string
+ * @see View::element()
+ */
+	public $elementCache = null;
+
+/**
+ * Element cache settings
+ *
+ * @var array
+ * @see View::_elementCache();
+ * @see View::_renderElement
+ */
+	public $elementCacheSettings = null;
+
+/**
+ * Default variables for the view.
+ *
+ * @var array
+ */
+	public $viewVars = array();
 
 /**
  * The instance of the content renderer.
@@ -108,7 +141,7 @@ abstract class CtkView extends CtkObject {
 /**
  * The base view object.
  *
- * @var BaseView
+ * @var CtkBaseView
  */
 	protected $_baseView = null;
 
@@ -125,13 +158,6 @@ abstract class CtkView extends CtkObject {
  * @var array
  */
 	protected $_helpers = array();
-
-/**
- * Variables for the view.
- *
- * @var array
- */
-	protected $_viewVars = array();
 
 /**
  * The blocks to be added.
@@ -154,11 +180,13 @@ abstract class CtkView extends CtkObject {
  * 
  * Also calls the CtkView::build() method to generate the object-oriented structure.
  * 
- * @param BaseView $baseView The base view object.
+ * @param CtkBaseView $baseView The base view object.
  * @throws CakeException if there is an error in the view.
  */
-	final public function __construct(BaseView $baseView) {
+	final public function __construct(CtkBaseView $baseView) {
+		parent::__construct();
 		$this->_baseView = $baseView;
+		$this->_inheritArrayProperties(array('factories', 'viewVars'));
 		if (is_string($this->renderer)) {
 			list($plugin, $name) = pluginSplit($this->renderer);
 			$class = $name . 'Renderer';
@@ -197,12 +225,28 @@ abstract class CtkView extends CtkObject {
 			list($plugin, $class) = pluginSplit($properties['class']);
 			$this->_helpers[$class] = new CtkHelper($class, $this->_baseView->Helpers->load($properties['class'], $properties['settings']), $this);
 		}
+		if (is_string($this->contentType)) {
+			$this->_baseView->response->type($this->contentType);
+		}
+		if (is_string($this->charset)) {
+			$this->_baseView->response->charset($this->charset);
+		}
+		if (is_string($this->theme)) {
+			$this->_baseView->theme = $this->theme;
+		}
 		if (is_string($this->layout)) {
 			$this->_baseView->layout = $this->layout;
 		}
 		if (!$this->autoLayout) {
 			$this->_baseView->autoLayout = false;
 		}
+		if (is_string($this->elementCache)) {
+			$this->_baseView->elementCache = $this->elementCache;
+		}
+		if (is_array($this->elementCacheSettings)) {
+			$this->_baseView->elementCacheSettings = $this->elementCacheSettings;
+		}
+		$this->_baseView->viewVars = array_merge((array) $this->viewVars, (array) $this->_baseView->viewVars);
 		$this->build();
 	}
 
@@ -278,7 +322,7 @@ abstract class CtkView extends CtkObject {
 /**
  * Returns the base view object.
  *
- * @return BaseView
+ * @return CtkBaseView
  */
 	final public function getBaseView() {
 		return $this->_baseView;
