@@ -30,7 +30,7 @@ App::uses('CtkView', 'Ctk.View');
  *
  * @package       Ctk.View
  */
-class HelperView extends CtkView {
+class CtkHelperView extends CtkView {
 
 /**
  * Method used to define the object-oriented structure of the view.

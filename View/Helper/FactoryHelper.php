@@ -21,7 +21,7 @@ App::uses('Core', 'Configure');
 App::uses('Set', 'Utility');
 App::uses('Helper', 'View');
 App::uses('CtkBaseView', 'Ctk.View');
-App::uses('HelperView', 'Ctk.View');
+App::uses('CtkHelperView', 'Ctk.View');
 App::uses('CtkFactory', 'Ctk.Lib');
 App::uses('CtkFactoryAdaptor', 'Ctk.Lib');
 
@@ -54,9 +54,9 @@ class FactoryHelper extends Helper {
 	protected $_baseView = null;
 
 /**
- * Reference to the HelperView object.
+ * Reference to the CtkHelperView object.
  *
- * @var HelperView
+ * @var CtkHelperView
  */
 	protected $_view = null;
 
@@ -94,7 +94,7 @@ class FactoryHelper extends Helper {
 		}
 		$this->_baseView = new CtkBaseView();
 		$this->_baseView->viewVars = $this->_View->viewVars;
-		$this->_view = new HelperView($this->_baseView);
+		$this->_view = new CtkHelperView($this->_baseView);
 		$this->_factories = (empty($this->settings['factories']))? array() : Set::normalize((array) $this->settings['factories']);
 		foreach ($this->_factories as $key => $value) {
 			$isAlias = (is_array($value) && isset($value['className']));
