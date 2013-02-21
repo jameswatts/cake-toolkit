@@ -30,7 +30,7 @@ App::uses('View', 'View');
  *
  * @package       Ctk.View
  */
-class BaseView extends View {
+class CtkBaseView extends View {
 
 /**
  * Sub-directory for this view file.  This is often used for extension based routing.
@@ -182,12 +182,6 @@ class BaseView extends View {
 		$this->_viewClass = Inflector::camelize($this->view) . 'View';
 		$class = $this->_viewClass;
 		$this->_viewObject = new $class($this);
-		if (isset($this->_viewObject->contentType)) {
-			$this->_controller->response->type($this->_viewObject->contentType);
-		}
-		if (isset($this->_viewObject->charset)) {
-			$this->_controller->response->charset($this->_viewObject->charset);
-		}
 		$content = $this->_viewObject->render();
 		$content = $this->_viewObject->process($content);
 		if ((int) Configure::read('debug') > 0) {

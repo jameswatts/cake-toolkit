@@ -20,7 +20,7 @@
 App::uses('Core', 'Configure');
 App::uses('Set', 'Utility');
 App::uses('Helper', 'View');
-App::uses('BaseView', 'Ctk.View');
+App::uses('CtkBaseView', 'Ctk.View');
 App::uses('HelperView', 'Ctk.View');
 App::uses('CtkFactory', 'Ctk.Lib');
 App::uses('CtkFactoryAdaptor', 'Ctk.Lib');
@@ -47,9 +47,9 @@ class FactoryHelper extends Helper {
 	public $response = null;
 
 /**
- * Reference to the BaseView object.
+ * Reference to the CtkBaseView object.
  *
- * @var BaseView
+ * @var CtkBaseView
  */
 	protected $_baseView = null;
 
@@ -92,7 +92,7 @@ class FactoryHelper extends Helper {
 		if (!empty($this->settings['configFile'])) {
 			$this->loadConfig($this->settings['configFile']);
 		}
-		$this->_baseView = new BaseView();
+		$this->_baseView = new CtkBaseView();
 		$this->_baseView->viewVars = $this->_View->viewVars;
 		$this->_view = new HelperView($this->_baseView);
 		$this->_factories = (empty($this->settings['factories']))? array() : Set::normalize((array) $this->settings['factories']);

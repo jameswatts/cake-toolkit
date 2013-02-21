@@ -38,7 +38,7 @@ abstract class CtkAppController extends AppController {
  *
  * @var string
  */
-	public $viewClass = 'Ctk.Base';
+	public $viewClass = 'Ctk.CtkBase';
 
 /**
  * The layout to use

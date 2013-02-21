@@ -68,7 +68,7 @@ class AppComponent extends Component {
  */
 	public function beforeRender(Controller $controller) {
 		if (!$this->ignoreAction || ((is_string($this->ignoreAction) && $this->ignoreAction != $controller->action) || (is_array($this->ignoreAction) && !in_array($controller->action, $this->ignoreAction)))) {
-			$controller->viewClass = 'Ctk.Base';
+			$controller->viewClass = 'Ctk.CtkBase';
 			if (is_array($this->helpers)) {
 				if (!is_array($controller->helpers)) {
 					$controller->helpers = $this->helpers;
