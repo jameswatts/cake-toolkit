@@ -142,6 +142,7 @@ abstract class HtmlElement extends CtkNode {
  */
 	final public function parseAttributes($params = array()) {
 		$content = '';
+		$params = array_merge(array('accesskey', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'dropzone', 'events', 'hidden', 'lang', 'spellcheck', 'style', 'tabindex', 'title'), $params);
 		foreach ($params as $name) {
 			if (isset($this->$name)) {
 				$content .= ' ' . $name . '="' . str_replace('"', '\"', $this->$name) . '"';
