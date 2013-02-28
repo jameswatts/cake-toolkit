@@ -23,6 +23,7 @@ App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkFactory', 'Ctk.Lib');
 App::uses('CtkEvent', 'Ctk.Lib');
+App::uses('CtkHelperView', 'Ctk.View');
 
 /**
  * Abstract class representing a node object.
@@ -191,6 +192,13 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @return string
  */
 	final public function __toString() {
+		if ($this->hasParent()) {
+			$parent = $this->getParent();
+			while ($parent->hasParent()) {
+				$parent = $parent->getParent();
+			}
+			return $parent->render();
+		}
 		return $this->render();
 	}
 

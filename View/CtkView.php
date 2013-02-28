@@ -183,9 +183,7 @@ abstract class CtkView extends CtkObject {
 /**
  * Contructor
  *
- * Sets up the factories to use for elements and populates the view variables.
- * 
- * Also calls the CtkView::build() method to generate the object-oriented structure.
+ * Sets up the factories and helpers to use and populates the view variables.
  * 
  * @param CtkBaseView $baseView The base view object.
  * @throws CakeException if there is an error in the view.
@@ -227,7 +225,7 @@ abstract class CtkView extends CtkObject {
 			$this->$property = new $class($this, $name, $plugin, $value);
 			$this->$property->setup();
 		}
-		$helpers = HelperCollection::normalizeObjectArray(array_merge($this->_baseView->helpers, (empty($this->helpers))? array() : Set::normalize((array) $this->helpers));
+		$helpers = HelperCollection::normalizeObjectArray(array_merge($this->_baseView->helpers, (empty($this->helpers))? array() : Set::normalize((array) $this->helpers)));
 		foreach ($helpers as $name => $properties) {
 			list($plugin, $class) = pluginSplit($properties['class']);
 			$this->_helpers[$class] = new CtkHelper($class, $this->_baseView->Helpers->load($properties['class'], $properties['settings']), $this);
