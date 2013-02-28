@@ -124,8 +124,10 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @param array $params The optional configuration parameters for the template.
  */
 	final public function __construct(CtkFactory $factory, $params = array()) {
+		parent::__construct();
 		$this->_factory = $factory;
 		$this->_nodeId = uniqid('ID_');
+		$this->_inheritArrayProperties(array('_params'));
 		foreach ($params as $name => $value) {
 			$this->_params[(string) $name] = $value;
 		}
@@ -142,8 +144,14 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 		if (isset($this->_params[(string) $name])) {
 			return $this->_params[(string) $name];
 		} else {
-			throw new CakeException(sprintf('Undefined param %s', $name));
+			$factory = $this->getFactory();
+			$factories = $factory->getFactories();
+			$helpers = $factory->getHelpers();
+			if (isset($factories[$name]) || isset($helpers[$name])) {
+				return $factory->$name;
+			}
 		}
+		throw new CakeException(sprintf('Undefined parameter: %s', $name));
 	}
 
 /**
@@ -291,7 +299,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 		if (!$this->_allowParent) {
 			throw new CakeException(sprintf('Parent %s not allowed for %s', get_Class($node), get_Class($this)));
 		} else if (is_array($this->_limitParent) && count($this->_limitParent) > 0 && !in_array(get_class($node), $this->_limitParent)) {
-			throw new CakeException(sprintf('Invalid parent %s for %s, must be: %s', get_class($node), get_class($this), implode(', ', $this->_limitParent)));
+			throw new CakeException(sprintf('Invalid parent %s for %s, must be %s', get_class($node), get_class($this), implode(', ', $this->_limitParent)));
 		} else {
 			$this->_parentNode = $node;
 		}
@@ -414,7 +422,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 						$node->setParent($this);
 						$this->_childNodes[] = $node;
 					} else {
-						throw new CakeException(sprintf('Invalid child %s for %s, must be: %s', get_class($node), get_class($this), implode(', ', $this->_limitChildren)));
+						throw new CakeException(sprintf('Invalid child %s for %s, must be %s', get_class($node), get_class($this), implode(', ', $this->_limitChildren)));
 					}
 				} else {
 					$node->setParent($this);
@@ -422,9 +430,8 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 				}
 			}
 			return $node;
-		} else {
-			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 		}
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 	}
 
 /**
@@ -447,9 +454,8 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 				}
 			}
 			throw new CakeException(sprintf('Unknown child %s', get_class($before)));
-		} else {
-			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 		}
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 	}
 
 /**
@@ -472,9 +478,8 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 				}
 			}
 			throw new CakeException(sprintf('Unknown child %s', get_class($after)));
-		} else {
-			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 		}
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 	}
 
 /**
@@ -498,9 +503,8 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 				}
 			}
 			return $this;
-		} else {
-			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 		}
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 	}
 
 /**
@@ -526,9 +530,8 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 				}
 			}
 			return $this;
-		} else {
-			throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 		}
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 	}
 
 /**
@@ -616,9 +619,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 			if ($this->hasEvents($type)) {
 				return $this->_events[strtolower($type)];
 			}
-		} else {
-			return $this->_events;
+			return array();
 		}
+		return $this->_events;
 	}
 
 /**
@@ -633,9 +636,8 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 		if ($this->_allowEvents) {
 			$this->_events[strtolower($type)][] = $event;
 			return $this;
-		} else {
-			throw new CakeException('Cannot bind event to node');
 		}
+		throw new CakeException('Cannot bind event to node');
 	}
 
 /**
@@ -678,9 +680,8 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 			ob_start();
 			require $path;
 			return ob_get_clean();
-		} else {
-			throw new CakeException(sprintf('Template not found: %s', $path));
 		}
+		throw new CakeException(sprintf('Template not found: %s', $path));
 	}
 
 /**
