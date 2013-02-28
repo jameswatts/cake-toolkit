@@ -49,6 +49,13 @@ abstract class CtkView extends CtkObject {
 	public $factories = array();
 
 /**
+ * An array containing the names of helpers this view uses.
+ *
+ * @var mixed A single name as a string or a list of names as an array.
+ */
+	public $helpers = array();
+
+/**
  * The name of the renderer to render the content.
  *
  * @var string The name of the renderer to use.
@@ -220,7 +227,7 @@ abstract class CtkView extends CtkObject {
 			$this->$property = new $class($this, $name, $plugin, $value);
 			$this->$property->setup();
 		}
-		$helpers = HelperCollection::normalizeObjectArray($this->_baseView->helpers);
+		$helpers = HelperCollection::normalizeObjectArray(array_merge($this->_baseView->helpers, (empty($this->helpers))? array() : Set::normalize((array) $this->helpers));
 		foreach ($helpers as $name => $properties) {
 			list($plugin, $class) = pluginSplit($properties['class']);
 			$this->_helpers[$class] = new CtkHelper($class, $this->_baseView->Helpers->load($properties['class'], $properties['settings']), $this);
@@ -247,15 +254,14 @@ abstract class CtkView extends CtkObject {
 			$this->_baseView->elementCacheSettings = $this->elementCacheSettings;
 		}
 		$this->_baseView->viewVars = array_merge((array) $this->viewVars, (array) $this->_baseView->viewVars);
-		$this->build();
 	}
 
 /**
- * Returns a view variable or helper from the controller.
+ * Returns a helper or view variable from the controller.
  *
- * @param string $name Name of view variable.
+ * @param string $name Name of the helper or view variable.
  * @return mixed
- * @throws CakeException if view variable is not found.
+ * @throws CakeException if helper or view variable is not found.
  */
 	final public function __get($name) {
 		if (isset($this->_helpers[(string) $name])) {
@@ -264,7 +270,7 @@ abstract class CtkView extends CtkObject {
 		if (isset($this->_baseView->viewVars[(string) $name])) {
 			return $this->_baseView->viewVars[(string) $name];
 		}
-		throw new CakeException(sprintf('Unknown variable or helper: %s', $name));
+		throw new CakeException(sprintf('Unknown helper or view variable: %s', $name));
 	}
 
 /**
@@ -299,6 +305,15 @@ abstract class CtkView extends CtkObject {
  */
 	final public function getFactories() {
 		return $this->_factories;
+	}
+
+/**
+ * Returns the helpers loaded for this view.
+ *
+ * @return array
+ */
+	final public function getHelpers() {
+		return $this->_helpers;
 	}
 
 /**

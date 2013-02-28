@@ -182,6 +182,7 @@ class CtkBaseView extends View {
 		$this->_viewClass = Inflector::camelize($this->view) . 'View';
 		$class = $this->_viewClass;
 		$this->_viewObject = new $class($this);
+		$this->_viewObject->build();
 		$content = $this->_viewObject->render();
 		$content = $this->_viewObject->process($content);
 		if ((int) Configure::read('debug') > 0) {
