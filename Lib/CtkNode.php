@@ -124,7 +124,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @param CtkFactory $factory The factory that created the node.
  * @param array $params The optional configuration parameters for the template.
  */
-	final public function __construct(CtkFactory $factory, $params = array()) {
+	final public function __construct(CtkFactory $factory, array $params = array()) {
 		parent::__construct();
 		$this->_factory = $factory;
 		$this->_nodeId = uniqid('ID_');

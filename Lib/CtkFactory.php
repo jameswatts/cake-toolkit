@@ -172,7 +172,7 @@ abstract class CtkFactory extends CtkObject {
 		if (!class_exists($class)) {
 			throw new CakeException(sprintf('Unknown object: %s', $class));
 		}
-		return new $class($this, (count($arguments) > 0)? (array) $arguments[0] : array());
+		return new $class($this, (count($arguments) > 0)? $arguments[0] : array());
 	}
 
 /**
