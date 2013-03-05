@@ -137,7 +137,7 @@ abstract class CtkFactory extends CtkObject {
 		if (isset($this->_helpers[(string) $name])) {
 			return $this->_helpers[(string) $name];
 		}
-		if (isset($this->settings[(string) $name])) {
+		if (array_key_exists($this->settings[(string) $name])) {
 			return $this->settings[(string) $name];
 		}
 		throw new CakeException(sprintf('Unknown helper or setting: %s', $name));
