@@ -146,7 +146,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 			return $this->_params[$name];
 		} else {
 			$factory = $this->getFactory();
-			if (array_key_exists($name, $factory->getFactories()) || array_key_exists($name, $factory->getHelpers())) {
+			if (property_exists($factory, $name) || array_key_exists($name, $factory->getHelpers())) {
 				return $factory->$name;
 			}
 		}
