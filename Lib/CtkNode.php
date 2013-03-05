@@ -142,13 +142,11 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @throws CakeException if the configuration parameter is undefined.
  */
 	final public function __get($name) {
-		if (array_key_exists($this->_params[(string) $name])) {
-			return $this->_params[(string) $name];
+		if (array_key_exists($name, $this->_params)) {
+			return $this->_params[$name];
 		} else {
 			$factory = $this->getFactory();
-			$factories = $factory->getFactories();
-			$helpers = $factory->getHelpers();
-			if (array_key_exists($name, $factories) || array_key_exists($name, $helpers)) {
+			if (array_key_exists($name, $factory->getFactories()) || array_key_exists($name, $factory->getHelpers())) {
 				return $factory->$name;
 			}
 		}

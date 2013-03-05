@@ -134,11 +134,11 @@ abstract class CtkFactory extends CtkObject {
  * @throws CakeException if the helper or setting is not found.
  */
 	final public function __get($name) {
-		if (isset($this->_helpers[(string) $name])) {
-			return $this->_helpers[(string) $name];
+		if (isset($this->_helpers[$name])) {
+			return $this->_helpers[$name];
 		}
-		if (array_key_exists($this->settings[(string) $name])) {
-			return $this->settings[(string) $name];
+		if (array_key_exists($name, $this->settings)) {
+			return $this->settings[$name];
 		}
 		throw new CakeException(sprintf('Unknown helper or setting: %s', $name));
 	}
