@@ -554,6 +554,17 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 	}
 
 /**
+ * Conditionally adds a node to this node as a child.
+ *
+ * @param boolean $condition The boolean value or expression.
+ * @param CtkBuildable $node Child node.
+ * @return CtkBuildable or null if condition is false
+ */
+	final public function addIf($condition = false, CtkBuildable $node) {
+		return ((bool) $condition === true)? $this->add($node) : null;
+	}
+
+/**
  * Replaces the specified node with the given node.
  *
  * @param CtkBuildable $node Child node.
