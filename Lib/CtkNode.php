@@ -306,6 +306,8 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 			throw new CakeException(sprintf('Parent %s not allowed for %s', get_Class($node), get_Class($this)));
 		} else if (is_array($this->_limitParent) && count($this->_limitParent) > 0 && !in_array(get_class($node), $this->_limitParent)) {
 			throw new CakeException(sprintf('Invalid parent %s for %s, must be %s', get_class($node), get_class($this), implode(', ', $this->_limitParent)));
+		} else if ($this === $node) {
+			throw new CakeException('Child cannot be parent of itself');
 		} else {
 			$this->_parentNode = $node;
 		}
@@ -336,9 +338,11 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @return boolean
  */
 	final public function hasChild(CtkBuildable $node) {
-		for ($i = 0; $i < count($this->_childNodes); $i++) {
-			if ($this->_childNodes[$i] === $node) {
-				return true;
+		if ($this !== $node) {
+			for ($i = 0; $i < count($this->_childNodes); $i++) {
+				if ($this->_childNodes[$i] === $node) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -423,6 +427,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 	final public function add(CtkBuildable $node) {
 		if ($this->_allowChildren) {
 			if (!$this->hasChild($node)) {
+				if ($this === $node) {
+					throw new CakeException('Cannot add child to itself');
+				}
 				if (is_array($this->_limitChildren) && count($this->_limitChildren) > 0) {
 					if (in_array(get_class($node), $this->_limitChildren)) {
 						$node->setParent($this);
@@ -450,6 +457,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  */
 	final public function addBefore(CtkBuildable $node, CtkBuildable $before) {
 		if ($this->_allowChildren) {
+			if ($this === $node || $this === $before) {
+				throw new CakeException('Cannot reference parent as a child');
+			}
 			if ($this->hasChild($node)) {
 				$this->removeChild($node);
 			}
@@ -474,6 +484,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  */
 	final public function addAfter(CtkBuildable $node, CtkBuildable $after) {
 		if ($this->_allowChildren) {
+			if ($this === $node || $this === $after) {
+				throw new CakeException('Cannot reference parent as a child');
+			}
 			if ($this->hasChild($node)) {
 				$this->removeChild($node);
 			}
@@ -549,6 +562,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @throws CakeException if the specified node is not a child.
  */
 	final public function replaceChild(CtkBuildable $node, CtkBuildable $replace) {
+		if ($this === $node || $this === $replace) {
+			throw new CakeException('Cannot reference parent as a child');
+		}
 		if (!$this->hasChild($replace)) {
 			throw new CakeException(sprintf('Unknown child %s', get_class($replace)));
 		}
@@ -572,6 +588,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @throws CakeException if the specified node is not a child.
  */
 	final public function removeChild(CtkBuildable $node) {
+		if ($this === $node) {
+			throw new CakeException('Cannot reference parent as a child');
+		}
 		for ($i = 0; $i < count($this->_childNodes); $i++) {
 			if ($this->_childNodes[$i] === $node) {
 				$node->setParent(null);
@@ -639,6 +658,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @throws CakeException if events are not allowed on this node.
  */
 	final public function bind($type, CtkEvent $event) {
+		if (!is_string($type)) {
+			throw new CakeException('Event type must be a string');
+		}
 		if ($this->_allowEvents) {
 			$this->_events[strtolower($type)][] = $event;
 			return $this;
@@ -682,6 +704,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @throws CakeException if template is not found.
  */
 	final public function load($path) {
+		if (!is_string($path)) {
+			throw new CakeException('Template path must be a string');
+		}
 		if (is_file($path) && is_readable($path)) {
 			ob_start();
 			require $path;
