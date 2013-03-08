@@ -110,7 +110,7 @@ class JsElement extends JsEvent {
 	}
 
 /**
- * Toggles the class of an element.
+ * Toggles the class of the element.
  *
  * @param string $class The class name to toggle.
  * @return JsElement
@@ -144,6 +144,28 @@ class JsElement extends JsEvent {
 	}
 
 /**
+ * Toggles the attribute of the element.
+ *
+ * @param string $name The attribute name to toggle.
+ * @return JsElement
+ */
+	public function toggleAttribute($name) {
+		$this->_elementActions[] = array('toggleAttribute', func_get_args());
+		return $this;
+	}
+
+/**
+ * Gets the value of a style property on the element.
+ *
+ * @param string $property The name of the style property.
+ * @return JsElement
+ */
+	public function getStyle($property) {
+		$this->_elementActions[] = array('getStyle', func_get_args());
+		return $this;
+	}
+
+/**
  * Sets the value of a style property on the element.
  *
  * @param string $property The name of the style property.
@@ -152,6 +174,42 @@ class JsElement extends JsEvent {
  */
 	public function setStyle($property, $value) {
 		$this->_elementActions[] = array('setStyle', func_get_args());
+		return $this;
+	}
+
+/**
+ * Gets the innerHTML of the element.
+ *
+ * @return JsElement
+ */
+	public function getText() {
+		$this->_elementActions[] = array('getText', func_get_args());
+		return $this;
+	}
+
+/**
+ * Sets the innerHTML of the element.
+ *
+ * @param string $text The text to set in the element.
+ * @return JsElement
+ */
+	public function setText($text) {
+		$this->_elementActions[] = array('setText', func_get_args());
+		return $this;
+	}
+
+/**
+ * Loads content via Ajax.
+ *
+ * @param string $url The URL to load from.
+ * @param array $params The optional params to send.
+ * @param string $method The HTTP method to use, defaults to GET.
+ * @param string $username The optional username.
+ * @param string $password The optional password.
+ * @return JsElement
+ */
+	public function ajax($url = '/', array $params = array(), $method = 'get', $username = null, $password = null) {
+		$this->_elementActions[] = array('ajax', func_get_args());
 		return $this;
 	}
 }
