@@ -17,6 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CtkBuildable', 'Ctk.Lib');
 App::uses('JsEvent', 'Ctk.View/Factory/Js/Objects');
 
 /**
@@ -39,7 +40,7 @@ class JsCallback extends JsEvent {
  * @var array The template configuration parameters.
  */
 	protected $_params = array(
-		'id' => null,
+		'node' => null,
 		'code' => 'return false'
 	);
 

@@ -18,6 +18,7 @@
  */
 
 App::uses('CtkBuildable', 'Ctk.Lib');
+App::uses('CtkEvent', 'Ctk.Lib');
 App::uses('JsEvent', 'Ctk.View/Factory/Js/Objects');
 
 /**
@@ -61,8 +62,12 @@ class JsElement extends JsEvent {
  * Shows the element.
  *
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function show() {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('show');
 		return $this;
 	}
@@ -71,8 +76,12 @@ class JsElement extends JsEvent {
  * Hides the element.
  *
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function hide() {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('hide');
 		return $this;
 	}
@@ -81,8 +90,12 @@ class JsElement extends JsEvent {
  * Toggles the element between visible and hidden.
  *
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function toggle() {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('toggle');
 		return $this;
 	}
@@ -92,8 +105,12 @@ class JsElement extends JsEvent {
  *
  * @param string $class The class name to add.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function addClass($class) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('addClass', func_get_args());
 		return $this;
 	}
@@ -103,8 +120,12 @@ class JsElement extends JsEvent {
  *
  * @param string $class The class name to remove.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function removeClass($class) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('removeClass', func_get_args());
 		return $this;
 	}
@@ -114,8 +135,12 @@ class JsElement extends JsEvent {
  *
  * @param string $class The class name to toggle.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function toggleClass($class) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('toggleClass', func_get_args());
 		return $this;
 	}
@@ -126,8 +151,12 @@ class JsElement extends JsEvent {
  * @param string $name The name of the attribute.
  * @param mixed $value The value of the attribute.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function setAttribute($name, $value) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('setAttribute', func_get_args());
 		return $this;
 	}
@@ -137,8 +166,12 @@ class JsElement extends JsEvent {
  *
  * @param string $name The name of the attribute.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function removeAttribute($name) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('removeAttribute', func_get_args());
 		return $this;
 	}
@@ -148,8 +181,12 @@ class JsElement extends JsEvent {
  *
  * @param string $name The attribute name to toggle.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function toggleAttribute($name) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('toggleAttribute', func_get_args());
 		return $this;
 	}
@@ -159,8 +196,12 @@ class JsElement extends JsEvent {
  *
  * @param string $property The name of the style property.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function getStyle($property) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('getStyle', func_get_args());
 		return $this;
 	}
@@ -171,8 +212,12 @@ class JsElement extends JsEvent {
  * @param string $property The name of the style property.
  * @param string $value The value of the style property.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function setStyle($property, $value) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('setStyle', func_get_args());
 		return $this;
 	}
@@ -181,8 +226,12 @@ class JsElement extends JsEvent {
  * Gets the innerHTML of the element.
  *
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function getText() {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('getText', func_get_args());
 		return $this;
 	}
@@ -192,8 +241,12 @@ class JsElement extends JsEvent {
  *
  * @param string $text The text to set in the element.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function setText($text) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('setText', func_get_args());
 		return $this;
 	}
@@ -207,8 +260,12 @@ class JsElement extends JsEvent {
  * @param string $username The optional username.
  * @param string $password The optional password.
  * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
  */
 	public function ajax($url = '/', array $params = array(), $method = 'get', $username = null, $password = null) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
 		$this->_elementActions[] = array('ajax', func_get_args());
 		return $this;
 	}
