@@ -228,6 +228,17 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 	}
 
 /**
+ * Sets additional configuration parameters for the template.
+ *
+ * @param array $params The configuration paramaters.
+ * @return CtkBuildable
+ */
+	final public function setParams(array $params = array()) {
+		$this->_params = $this->_params+$params;
+		return $this;
+	}
+
+/**
  * Returns the node type.
  *
  * @return string
@@ -360,7 +371,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 /**
  * Returns the first child node of this node.
  *
- * @return CtkBuildable
+ * @return CtkBuildable or null if no children exist
  */
 	final public function getFirst() {
 		if ($this->hasChildren()) {
@@ -372,7 +383,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 /**
  * Returns the last child node of this node.
  *
- * @return CtkBuildable
+ * @return CtkBuildable or null if no children exist
  */
 	final public function getLast() {
 		if ($this->hasChildren()) {
@@ -384,7 +395,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 /**
  * Returns the previous node before this node in the common parent.
  *
- * @return CtkBuildable
+ * @return CtkBuildable or null if no node before this node
  */
 	final public function getPrevious() {
 		$children = $this->getParent()->getChildren();
@@ -402,7 +413,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 /**
  * Returns the next node after this node in the common parent.
  *
- * @return CtkBuildable
+ * @return CtkBuildable or null if no node after this node
  */
 	final public function getNext() {
 		$children = $this->getParent()->getChildren();
@@ -415,6 +426,55 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 			}
 		}
 		return null;
+	}
+
+/**
+ * Executes a callback function on each of the child nodes.
+ *
+ * @param callable $callback The callback function to use.
+ * @param array $data The optional array of data to be used by the callback function.
+ * @param boolean|int $deep Determines if applies to all children of children, or if an integer, defines the max depth.
+ * @return CtkBuildable
+ * @throws CakeException if the callback function is not callable.
+ */
+	final public function each($callback, array $data = array(), $deep = false) {
+		if (!is_callable($callback)) {
+			throw new CakeException('Callback function must be callable');
+		}
+		if ($this->hasChildren()) {
+			$children = $this->getChildren();
+			$view = $this->_factory->getView();
+			for ($i = 0; $i < count($children); $i++) {
+				$break = call_user_func_array($callback, array($children[$i], $this, $view, $data, $i));
+				if (!is_null($break) && $break === true) {
+					break;
+				}
+				if ($deep && $children[$i]->hasChildren()) {
+					$children[$i]->each($callback, $data, (is_bool($deep))? true : $deep-1);
+				}
+			}
+		}
+		return $this;
+	}
+
+/**
+ * Returns a duplicate of the node with a unique ID.
+ *
+ * @param array $params The optional configuration parameters to merge with exisitng values.
+ * @return CtkBuildable
+ */
+	final public function copy(array $params = null) {
+		$node = clone $this;
+		$node->setId(uniqid('ID_'));
+		if (is_array($params)) {
+			$node->setParams($params);
+		}
+		$children = $node->getChildren();
+		$node->clearChildren();
+		for ($i = 0; $i < count($children); $i++) {
+			$node->add($children[$i]->copy());
+		}
+		return $node;
 	}
 
 /**
@@ -559,9 +619,38 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @param boolean $condition The boolean value or expression.
  * @param CtkBuildable $node Child node.
  * @return CtkBuildable or null if condition is false
+ * @throws CakeException if this node does not allow children.
  */
 	final public function addIf($condition = false, CtkBuildable $node) {
-		return ((bool) $condition === true)? $this->add($node) : null;
+		if ($this->_allowChildren) {
+			return ((bool) $condition === true)? $this->add($node) : null;
+		}
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
+ * Adds a node to this node as a child while the callback function returns a node.
+ *
+ * @param callable $callback The callback function to return nodes.
+ * @param array $data The optional array of data to be used by the callback function.
+ * @return CtkBuildable
+ * @throws CakeException if the callback function is not callable or if this node does not allow children.
+ */
+	final public function addWhile($callback, array $data = array()) {
+		if (!is_callable($callback)) {
+			throw new CakeException('Callback function must be callable');
+		}
+		if ($this->_allowChildren) {
+			$i = 0;
+			$view = $this->_factory->getView();
+			$node = call_user_func_array($callback, array($this, $view, $data, $i));
+			while (is_object($node) && $node instanceof CtkBuildable) {
+				$this->add($node);
+				$node = call_user_func_array($callback, array($this, $view, $data, ++$i));
+			}
+			return $this;
+		}
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 	}
 
 /**

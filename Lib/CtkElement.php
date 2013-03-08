@@ -91,6 +91,7 @@ class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
  *   Defaults to false.
  */
 	final public function __construct(CtkView $view, $name, $data = array(), $options = array()) {
+		parent::__construct();
 		$this->_view = $view;
 		$this->_name = (string) $name;
 		$this->_data = $data;
@@ -235,6 +236,28 @@ class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
+ * Executes a callback function on each of the child nodes.
+ *
+ * @param callable $callback The callback function to use.
+ * @param array $data The optional array of data to be used by the callback function.
+ * @param boolean|int $deep Determines if applies to all children of children, or if an integer, defines the max depth.
+ * @return CtkBuildable
+ */
+	final public function each($callback, array $data = array(), $deep = false) {
+		return $this;
+	}
+
+/**
+ * Returns a duplicate of the node.
+ *
+ * @param array $params The optional configuration parameters to merge with exisitng values.
+ * @return CtkBuildable
+ */
+	final public function copy(array $params = null) {
+		return clone $this;
+	}
+
+/**
  * Adds a node to this node as a child.
  *
  * @param CtkBuildable $node Child node.
@@ -289,6 +312,30 @@ class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
  * @throws CakeException if this node does not allow children.
  */
 	final public function addFrom(CtkBuildable $node, $prepend = false) {
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
+ * Conditionally adds a node to this node as a child.
+ *
+ * @param boolean $condition The boolean value or expression.
+ * @param CtkBuildable $node Child node.
+ * @return CtkBuildable or null if condition is false
+ * @throws CakeException if this node does not allow children.
+ */
+	final public function addIf($condition = false, CtkBuildable $node) {
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
+ * Adds a node to this node as a child while the callback function returns a node.
+ *
+ * @param callable $callback The callback function to return nodes.
+ * @param array $data The optional array of data to be used by the callback function.
+ * @return CtkBuildable
+ * @throws CakeException if this node does not allow children.
+ */
+	final public function addWhile($callback, array $data = array()) {
 		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
 	}
 

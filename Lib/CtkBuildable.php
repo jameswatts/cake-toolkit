@@ -96,6 +96,25 @@ interface CtkBuildable {
 	public function getNext();
 
 /**
+ * Executes a callback function on each of the child nodes.
+ *
+ * @param callable $callback The callback function to use.
+ * @param array $data The optional array of data to be used by the callback function.
+ * @param boolean|int $deep Determines if applies to all children of children, or if an integer, defines the max depth.
+ * @return CtkBuildable
+ * @throws CakeException if the callback function is not callable.
+ */
+	public function each($callback, array $data = array(), $deep = false);
+
+/**
+ * Returns a duplicate of the node with a unique ID.
+ *
+ * @param array $params The optional configuration parameters to merge with exisitng values.
+ * @return CtkBuildable
+ */
+	public function copy(array $params = null);
+
+/**
  * Adds a node to this node as a child.
  *
  * @param CtkBuildable $node Child node.
@@ -137,6 +156,24 @@ interface CtkBuildable {
  * @return CtkBuildable
  */
 	public function addFrom(CtkBuildable $node, $prepend = false);
+
+/**
+ * Conditionally adds a node to this node as a child.
+ *
+ * @param boolean $condition The boolean value or expression.
+ * @param CtkBuildable $node Child node.
+ * @return CtkBuildable or null if condition is false
+ */
+	public function addIf($condition = false, CtkBuildable $node);
+
+/**
+ * Adds a node to this node as a child while the callback function returns a node.
+ *
+ * @param callable $callback The callback function to return nodes.
+ * @param array $data The optional array of data to be used by the callback function.
+ * @return CtkBuildable
+ */
+	public function addWhile($callback, array $data = array());
 
 /**
  * Replaces the specified node with the given node.
