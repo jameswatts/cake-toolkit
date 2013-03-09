@@ -54,5 +54,15 @@ abstract class JsEvent extends CtkEvent {
 			return $code;
 		}
 	}
+
+/**
+ * Encapsultes an event to resolve the result at run-time.
+ *
+ * @param mixed $event The event to decorate.
+ * @return string
+ */
+	protected function _resolveCode($event) {
+		return ($event instanceof CtkEvent)? '(function(){var data=(' . $event . ');return (typeof data==="function")?data():data;})()' : '"' . str_replace('"', '\"', $event) . '"';
+	}
 }
 
