@@ -191,7 +191,7 @@ abstract class CtkView extends CtkObject {
 	final public function __construct(CtkBaseView $baseView) {
 		parent::__construct();
 		$this->_baseView = $baseView;
-		$this->_inheritArrayProperties(array('factories', 'viewVars'));
+		$this->_inheritArrayProperties(array('factories', 'helpers', 'viewVars'));
 		if (is_string($this->renderer)) {
 			list($plugin, $name) = pluginSplit($this->renderer);
 			$class = $name . 'Renderer';
@@ -378,6 +378,126 @@ abstract class CtkView extends CtkObject {
 	}
 
 /**
+ * Determines if the view has child nodes.
+ *
+ * @return boolean
+ */
+	final public function hasChildren() {
+		return (count($this->_childNodes) > 0);
+	}
+
+/**
+ * Determines if a node is a child of the view.
+ *
+ * @return boolean
+ */
+	final public function hasChild(CtkBuildable $node) {
+		if ($this !== $node) {
+			for ($i = 0; $i < count($this->_childNodes); $i++) {
+				if ($this->_childNodes[$i] === $node) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+/**
+ * Returns the child nodes of the view as an array.
+ *
+ * @return array
+ */
+	final public function getChildren() {
+		return $this->_childNodes;
+	}
+
+/**
+ * Returns the first child node of the view.
+ *
+ * @return CtkBuildable or null if no children exist
+ */
+	final public function getFirst() {
+		if ($this->hasChildren()) {
+			return $this->_childNodes[0];
+		}
+		return null;
+	}
+
+/**
+ * Returns the last child node of the view.
+ *
+ * @return CtkBuildable or null if no children exist
+ */
+	final public function getLast() {
+		if ($this->hasChildren()) {
+			return $this->_childNodes[count($this->_childNodes)-1];
+		}
+		return null;
+	}
+
+/**
+ * Returns the previous node before this node in the view.
+ *
+ * @return CtkBuildable or null if no node before this node
+ */
+	final public function getPrevious() {
+		$children = $this->getChildren();
+		$count = count($children);
+		if ($count > 1) {
+			for ($i = 0; $i < $count; $i++) {
+				if ($children[$i] === $this) {
+					return ($i < 1)? null : $children[$i-1];
+				}
+			}
+		}
+		return null;
+	}
+
+/**
+ * Returns the next node after this node in the view.
+ *
+ * @return CtkBuildable or null if no node after this node
+ */
+	final public function getNext() {
+		$count = count($this->_childNodes);
+		if ($count > 1) {
+			for ($i = 0; $i < $count; $i++) {
+				if ($this->_childNodes[$i] === $this) {
+					return ($i == $count-1)? null : $this->_childNodes[$i+1];
+				}
+			}
+		}
+		return null;
+	}
+
+/**
+ * Executes a callback function on each of the child nodes.
+ *
+ * @param callable $callback The callback function to use.
+ * @param array $data The optional array of data to be used by the callback function.
+ * @param boolean|int $deep Determines if applies to all children of children, or if an integer, defines the max depth.
+ * @return CtkBuildable
+ * @throws CakeException if the callback function is not callable.
+ */
+	final public function each($callback, array $data = array(), $deep = false) {
+		if (!is_callable($callback)) {
+			throw new CakeException('Callback function must be callable');
+		}
+		if ($this->hasChildren()) {
+			for ($i = 0; $i < count($this->_childNodes); $i++) {
+				$break = call_user_func_array($callback, array($this->_childNodes[$i], $this, $this, $data, $i));
+				if (!is_null($break) && $break === true) {
+					break;
+				}
+				if ($deep && $this->_childNodes[$i]->hasChildren()) {
+					$this->_childNodes[$i]->each($callback, $data, (is_bool($deep))? true : $deep-1);
+				}
+			}
+		}
+		return $this;
+	}
+
+/**
  * Adds a node to the children of the view object.
  *
  * @param CtkBuildable $node The node object, must be buildable.
@@ -387,6 +507,187 @@ abstract class CtkView extends CtkObject {
 		$node->setParent(null);
 		$this->_childNodes[] = $node;
 		return $node;
+	}
+
+/**
+ * Adds a node before the specified node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @param CtkBuildable $before Node to add before.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child.
+ */
+	final public function addBefore(CtkBuildable $node, CtkBuildable $before) {
+		if ($this === $node || $this === $before) {
+			throw new CakeException('Cannot reference view as a child');
+		}
+		if ($this->hasChild($node)) {
+			$this->removeChild($node);
+		}
+		for ($i = 0; $i < count($this->_childNodes); $i++) {
+			if ($this->_childNodes[$i] === $before) {
+				array_splice($this->_childNodes, $i-1, 0, $node);
+				return $node;
+			}
+		}
+		throw new CakeException(sprintf('Unknown child %s', get_class($before)));
+	}
+
+/**
+ * Adds a node after the specified node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @param CtkBuildable $after Node to add after.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child.
+ */
+	final public function addAfter(CtkBuildable $node, CtkBuildable $after) {
+		if ($this === $node || $this === $after) {
+			throw new CakeException('Cannot reference view as a child');
+		}
+		if ($this->hasChild($node)) {
+			$this->removeChild($node);
+		}
+		for ($i = 0; $i < count($this->_childNodes); $i++) {
+			if ($this->_childNodes[$i] === $after) {
+				array_splice($this->_childNodes, $i+1, 0, $node);
+				return $node;
+			}
+		}
+		throw new CakeException(sprintf('Unknown child %s', get_class($after)));
+	}
+
+/**
+ * Adds an array of nodes to the view as children.
+ *
+ * @param array $nodes The child nodes.
+ * @return CtkView
+ * @throws CakeException if an object in the array does not implement CtkBuildable.
+ */
+	final public function addMany(array $nodes) {
+		foreach ($nodes as $name => &$node) {
+			if ($node instanceof CtkBuildable) {
+				$this->add($node);
+			} else {
+				throw new CakeException(sprintf('Unknown child %s', (is_object($node))? get_class($node) : (string) $node));
+			}
+		}
+		return $this;
+	}
+
+/**
+ * Inherits the children of a node.
+ *
+ * @param CtkBuildable $node The node to inherit from.
+ * @param boolean $prepend Nodes should be added before existing children.
+ * @return CtkView
+ */
+	final public function addFrom(CtkBuildable $node, $prepend = false) {
+		$count = count($this->_childNodes);
+		if ($prepend && $count > 0) {
+			$first = $node->getFirst();
+			for ($i = $count-1; $i >= 0; $i--) {
+				$first = $this->addBefore($this->_childNodes[$i], $first);
+			}
+		} else {
+			for ($i = 0; $i < $count; $i++) {
+				$this->add($this->_childNodes[$i]);
+			}
+		}
+		return $this;
+	}
+
+/**
+ * Conditionally adds a node to the view as a child.
+ *
+ * @param boolean $condition The boolean value or expression.
+ * @param CtkBuildable $node Child node.
+ * @return CtkBuildable or null if condition is false
+ */
+	final public function addIf($condition = false, CtkBuildable $node) {
+		return ((bool) $condition === true)? $this->add($node) : null;
+	}
+
+/**
+ * Adds a node to the view as a child while the callback function returns a node.
+ *
+ * @param callable $callback The callback function to return nodes.
+ * @param array $data The optional array of data to be used by the callback function.
+ * @return CtkView
+ * @throws CakeException if the callback function is not callable.
+ */
+	final public function addWhile($callback, array $data = array()) {
+		if (!is_callable($callback)) {
+			throw new CakeException('Callback function must be callable');
+		}
+		$i = 0;
+		$node = call_user_func_array($callback, array($this, $this, $data, $i));
+		while (is_object($node) && $node instanceof CtkBuildable) {
+			$this->add($node);
+			$node = call_user_func_array($callback, array($this, $this, $data, ++$i));
+		}
+		return $this;
+	}
+
+/**
+ * Replaces the specified node with the given node.
+ *
+ * @param CtkBuildable $node Child node.
+ * @param CtkBuildable $replace Node to replace.
+ * @return CtkView
+ * @throws CakeException if the specified node is not a child.
+ */
+	final public function replaceChild(CtkBuildable $node, CtkBuildable $replace) {
+		if ($this === $node || $this === $replace) {
+			throw new CakeException('Cannot reference view as a child');
+		}
+		if (!$this->hasChild($replace)) {
+			throw new CakeException(sprintf('Unknown child %s', get_class($replace)));
+		}
+		if ($this->hasChild($node)) {
+			$this->removeChild($node);
+		}
+		for ($i = 0; $i < count($this->_childNodes); $i++) {
+			if ($this->_childNodes[$i] === $replace) {
+				$replace->setParent(null);
+				$this->_childNodes[$i] = $node;
+				return $this;
+			}
+		}
+	}
+
+/**
+ * Removes and returns a child node from the view.
+ *
+ * @param CtkBuildable $node Child node.
+ * @return CtkBuildable
+ * @throws CakeException if the specified node is not a child.
+ */
+	final public function removeChild(CtkBuildable $node) {
+		if ($this === $node) {
+			throw new CakeException('Cannot reference view as a child');
+		}
+		for ($i = 0; $i < count($this->_childNodes); $i++) {
+			if ($this->_childNodes[$i] === $node) {
+				$node->setParent(null);
+				array_splice($this->_childNodes, $i, 1);
+				return $node;
+			}
+		}
+		throw new CakeException(sprintf('Unknown child %s', get_class($node)));
+	}
+
+/**
+ * Removes all children from the view.
+ *
+ * @return CtkView
+ */
+	final public function clearChildren() {
+		foreach ($this->_childNodes as &$node) {
+			$node->setParent(null);
+		}
+		$this->_childNodes = array();
+		return $this;
 	}
 
 /**
