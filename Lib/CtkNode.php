@@ -82,6 +82,13 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 	protected $_childNodes = array();
 
 /**
+ * The events registered on this object.
+ *
+ * @var array Collection of event types and objects.
+ */
+	protected $_nodeEvents = array();
+
+/**
  * Determines if the node can have a parent.
  *
  * @var boolean Set to FALSE to block adding to other nodes.
@@ -756,23 +763,23 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @return boolean
  */
 	final public function hasEvents($type = null) {
-		return (is_string($type))? isset($this->_events[strtolower($type)]) : (bool) count($this->_events);
+		return (is_string($type))? isset($this->_nodeEvents[strtolower($type)]) : (bool) count($this->_nodeEvents);
 	}
 
 /**
  * Returns the events for a specific event type.
  *
- * @param string $type The event type.
+ * @param string $type The optional event type to filter the registered events.
  * @return array
  */
-	final public function getEvents($type) {
+	final public function getEvents($type = null) {
 		if (is_string($type)) {
 			if ($this->hasEvents($type)) {
-				return $this->_events[strtolower($type)];
+				return $this->_nodeEvents[strtolower($type)];
 			}
 			return array();
 		}
-		return $this->_events;
+		return $this->_nodeEvents;
 	}
 
 /**
@@ -788,7 +795,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 			throw new CakeException('Event type must be a string');
 		}
 		if ($this->_allowEvents) {
-			$this->_events[strtolower($type)][] = $event;
+			$this->_nodeEvents[strtolower($type)][] = $event;
 			return $this;
 		}
 		throw new CakeException('Cannot bind event to node');
@@ -801,7 +808,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @return CtkBuildable
  */
 	final public function removeEvents($type) {
-		unset($this->_events[strtolower($type)]);
+		unset($this->_nodeEvents[strtolower($type)]);
 		return $this;
 	}
 
@@ -814,10 +821,10 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 	final public function clearEvents($type = null) {
 		if (is_string($type)) {
 			if ($this->hasEvents($type)) {
-				unset($this->_events[strtolower($type)]);
+				unset($this->_nodeEvents[strtolower($type)]);
 			}
 		} else {
-			$this->_events = array();
+			$this->_nodeEvents = array();
 		}
 		return $this;
 	}
