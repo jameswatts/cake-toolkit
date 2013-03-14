@@ -67,7 +67,11 @@ class CtkContent extends CtkObject implements CtkBuildable,CtkRenderable {
  * @return string
  */
 	final public function __toString() {
-		return $this->render();
+		try {
+			return $this->render();
+		} catch(Exception $e) {
+			trigger_error($e->getMessage(), E_USER_ERROR);
+		}
 	}
 
 /**

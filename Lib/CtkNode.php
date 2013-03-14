@@ -221,14 +221,18 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @return string
  */
 	final public function __toString() {
-		if ($this->hasParent()) {
-			$parent = $this->getParent();
-			while ($parent->hasParent()) {
-				$parent = $parent->getParent();
+		try {
+			if ($this->hasParent()) {
+				$parent = $this->getParent();
+				while ($parent->hasParent()) {
+					$parent = $parent->getParent();
+				}
+				return $parent->render();
 			}
-			return $parent->render();
+			return $this->render();
+		} catch(Exception $e) {
+			trigger_error($e->getMessage(), E_USER_ERROR);
 		}
-		return $this->render();
 	}
 
 /**
