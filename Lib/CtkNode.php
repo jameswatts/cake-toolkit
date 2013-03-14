@@ -129,9 +129,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 		$this->_factory = $factory;
 		$this->_nodeId = uniqid('ID_');
 		$this->_inheritArrayProperties(array('_params'));
-		foreach ($params as $name => $value) {
-			$this->_params[(string) $name] = $value;
-		}
+		$this->setParams($params);
 	}
 
 /**
@@ -154,13 +152,39 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 	}
 
 /**
- * Set the value of a template configuration parameter.
+ * Set the value of a template configuration parameter. Accepts some special parameter names 
+ * which match to internals of the object. These include:
+ *
+ * - "_type" string $value The node type to pass to setType().
+ * - "_id" string $value The unique ID to pass to setId().
+ * - "_parent" CtkBuildable $value The node to pass to setParent().
+ * - "_children" array $value An array of nodes or definitions to pass to addMany().
+ * - "_events" array $value An array of events, where keys are types and values CtkEvent objects.
  *
  * @param string $name Name of the configuration parameter.
  * @param mixed $value Value of the configuration parameter.
+ * @throws CakeException if the value for "_events" is not an array.
  */
 	final public function __set($name, $value = null) {
-		$this->_params[(string) $name] = $value;
+		if ($name === '_type') {
+			$this->setType($value);
+		} else if ($name === '_id') {
+			$this->setId($value);
+		} else if ($name === '_parent') {
+			$this->setParent($value);
+		} else if ($name === '_children') {
+			$this->addMany($value);
+		} else if ($name === '_events') {
+			if (is_array($value)) {
+				foreach ($value as $type => $event) {
+					$this->bind($type, $event);
+				}
+			} else {
+				throw new CakeException('Value for _events parameter must be an array');
+			}
+		} else {
+			$this->_params[(string) $name] = $value;
+		}
 	}
 
 /**
@@ -234,7 +258,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @return CtkBuildable
  */
 	final public function setParams(array $params = array()) {
-		$this->_params = $this->_params+$params;
+		foreach ($params as $name => $value) {
+			$this->__set((string) $name, $value);
+		}
 		return $this;
 	}
 
