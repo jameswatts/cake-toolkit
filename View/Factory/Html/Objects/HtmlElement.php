@@ -71,13 +71,6 @@ abstract class HtmlElement extends CtkNode {
 	protected $_attributes = array();
 
 /**
- * The collection of events for the HTML element.
- *
- * @var array The element events.
- */
-	protected $_events = array();
-
-/**
  * Determines if a given attribute has been set.
  *
  * @param string $name Name of the attribute.
@@ -162,7 +155,7 @@ abstract class HtmlElement extends CtkNode {
  * @return string
  */
 	final public function parseClass() {
-		$content = ' class="html-element html-' . $this->_nodeType;
+		$content = ' class="html-element html-' . $this->getType();
 		if ($this->__isset('class')) {
 			$content .= ' ' . $this->__get('class');
 		}
@@ -179,11 +172,14 @@ abstract class HtmlElement extends CtkNode {
  */
 	final public function parseEvents() {
 		$content = '';
-		if ($this->hasEvents() || (isset($this->events) && $this->_allowEvents)) {
+		$hasEvents = $this->hasEvents();
+		$allowsEvents = $this->allowsEvents();
+		$nodeEvents = $this->getEvents();
+		if ($hasEvents || (isset($this->events) && $allowsEvents)) {
 			$content .= '<script type="text/javascript">(function(){';
 		}
-		if ($this->hasEvents()) {
-			foreach ($this->_events as $type => $events) {
+		if ($hasEvents) {
+			foreach ($nodeEvents as $type => $events) {
 				foreach ($events as $event) {
 					$code = $event->render();
 					$callback = uniqid('JS_');
@@ -192,7 +188,7 @@ abstract class HtmlElement extends CtkNode {
 			}
 		}
 		if (isset($this->events)) {
-			if ($this->_allowEvents) {
+			if ($allowsEvents) {
 				foreach ($this->events as $type => $event) {
 					$code = ($event instanceof CtkEvent)? $event->render() : (string) $event;
 					$callback = uniqid('JS_');
@@ -200,7 +196,7 @@ abstract class HtmlElement extends CtkNode {
 				}
 			}
 		}
-		if ($this->hasEvents() || (isset($this->events) && $this->_allowEvents)) {
+		if ($hasEvents || (isset($this->events) && $allowsEvents)) {
 			$content .= '})();</script>';
 		}
 		return $content;
