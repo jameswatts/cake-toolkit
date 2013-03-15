@@ -46,6 +46,9 @@ foreach ($this->_elementActions as $action) {
 		case 'setValue':
 			echo 'node.value=' . $this->_resolveCode($action[1][0]) . ';';
 			break;
+		case 'submit':
+			echo 'return (typeof node.onsubmit==="function")?node.onsubmit():node.submit();';
+			break;
 		case 'ajax':
 			$params = array();
 			if (isset($action[1][1]) && is_array($action[1][1])) {

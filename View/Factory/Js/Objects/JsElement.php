@@ -281,6 +281,20 @@ class JsElement extends JsEvent {
 	}
 
 /**
+ * Submits a form element.
+ *
+ * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
+ */
+	public function submit() {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
+		$this->_elementActions[] = array('submit', func_get_args());
+		return $this;
+	}
+
+/**
  * Loads content via Ajax.
  *
  * @param string $url The URL to load from.
