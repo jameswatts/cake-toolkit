@@ -252,6 +252,35 @@ class JsElement extends JsEvent {
 	}
 
 /**
+ * Gets the value of the element.
+ *
+ * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
+ */
+	public function getValue() {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
+		$this->_elementActions[] = array('getValue', func_get_args());
+		return $this;
+	}
+
+/**
+ * Sets the value of the element.
+ *
+ * @param string $value The value to set for the element.
+ * @return JsElement
+ * @throws CakeException if a node has not been referenced in Element.
+ */
+	public function setValue($value) {
+		if (!isset($this->_params['node']) || !is_object($this->_params['node']) || !($this->_params['node'] instanceof CtkBuildable)) {
+			throw new CakeException('Unknown node referenced');
+		}
+		$this->_elementActions[] = array('setValue', func_get_args());
+		return $this;
+	}
+
+/**
  * Loads content via Ajax.
  *
  * @param string $url The URL to load from.

@@ -40,6 +40,12 @@ foreach ($this->_elementActions as $action) {
 		case 'setText':
 			echo 'node.innerHTML=' . $this->_resolveCode($action[1][0]) . ';';
 			break;
+		case 'getValue':
+			echo 'return node.value;';
+			break;
+		case 'setValue':
+			echo 'node.value=' . $this->_resolveCode($action[1][0]) . ';';
+			break;
 		case 'ajax':
 			$params = array();
 			if (isset($action[1][1]) && is_array($action[1][1])) {
