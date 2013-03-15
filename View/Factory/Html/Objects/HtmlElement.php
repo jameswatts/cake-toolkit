@@ -41,6 +41,7 @@ abstract class HtmlElement extends CtkNode {
  */
 	protected $_params = array(
 		'accesskey' => null,
+		'attributes' => null,
 		'class' => null,
 		'contenteditable' => null,
 		'contextmenu' => null,
@@ -136,14 +137,19 @@ abstract class HtmlElement extends CtkNode {
 	final public function parseAttributes($params = array()) {
 		$content = '';
 		$params = array_merge(array('accesskey', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'dropzone', 'events', 'hidden', 'lang', 'spellcheck', 'style', 'tabindex', 'title'), $params);
+		if ($this->__isset('attributes') && is_array($this->attributes)) {
+			foreach ($this->attributes as $name => $value) {
+				$content .= ' ' . $name . '="' . htmlentities($value) . '"';
+			}
+		}
 		foreach ($params as $name) {
 			if (isset($this->$name)) {
-				$content .= ' ' . $name . '="' . str_replace('"', '\"', $this->$name) . '"';
+				$content .= ' ' . $name . '="' . htmlentities($this->$name) . '"';
 			}
 		}
 		foreach ($this->_attributes as $name => $value) {
 			if ($name !== 'class') {
-				$content .= ' ' . $name . '="' . str_replace('"', '\"', $value) . '"';
+				$content .= ' ' . $name . '="' . htmlentities($value) . '"';
 			}
 		}
 		return $content;
