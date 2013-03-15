@@ -13,4 +13,5 @@ if (isset($this->method) && is_string($this->method) && strtolower($this->method
 	echo 'request.open("get",' . $url . ',' . ((isset($this->async) && $this->async)? 'true' : 'false') . ',' . $this->_resolveCode($this->username) . ',' . $this->_resolveCode($this->password) . ');';
 }
 echo 'request.onreadystatechange=function(e){if(request.readyState===4&&request.status===200){(function(){' . $this->code . '}).call(request);}};request.send(' . ((count($params))? '"' . implode('&', $params) . '"' : 'null') . ');';
-?>})();
+?>})()
+

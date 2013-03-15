@@ -9,4 +9,5 @@ foreach ($this->_elementActions as $action) {
 			break;
 	}
 }
-?>})();
+?>})()
+
