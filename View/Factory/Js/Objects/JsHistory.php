@@ -52,9 +52,10 @@ class JsHistory extends JsEvent {
  * Goes to the previous page in session history, the same action as when the user clicks the browser's Back button.
  *
  * @param string $url The URL to load if history is empty.
+ * @param boolean $host Optionally require the referer to be on the same domain.
  * @return JsHistory
  */
-	public function back($url = null) {
+	public function back($url = null, $host = null) {
 		$this->_elementActions[] = array('back', func_get_args());
 		return $this;
 	}

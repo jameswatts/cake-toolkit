@@ -2,7 +2,9 @@
 foreach ($this->_elementActions as $action) {
 	switch ($action[0]) {
 		case 'back':
-			echo 'if(history.length>1){history.back();}else{' . ((isset($action[1][0]))? 'location=' . $this->_resolveCode($action[1][0]) : 'history.go()') . ';}';
+			$request = $this->getFactory()->getView()->getRequest();
+			$referer = $request->referer(true);
+			echo (isset($action[1][0]) && isset($action[1][1]) && $action[1][1] && ($referer === '/' || strpos($referer, $request->base) !== 0))? 'location=' . $this->_resolveCode($action[1][0]) . ';' : 'if(history.length>1){history.back();}else{' . ((isset($action[1][0]))? 'location=' . $this->_resolveCode($action[1][0]) : 'history.go()') . ';}';
 			break;
 		case 'forward':
 			echo 'history.forward();';
