@@ -1,1 +1,1 @@
-<!-- <?php echo $this->text; ?> -->
+<!-- <?php echo (string) $this->text; ?> -->

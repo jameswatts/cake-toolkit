@@ -1,1 +1,1 @@
-<title><?php echo $this->text; ?></title>
+<title><?php echo (string) $this->text; ?></title>
