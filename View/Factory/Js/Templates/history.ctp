@@ -2,7 +2,7 @@
 foreach ($this->_elementActions as $action) {
 	switch ($action[0]) {
 		case 'back':
-			echo 'if(history.length>0){history.back();}else{' . ((isset($action[1][0]))? 'location=' . $this->_resolveCode($action[1][0]) : 'history.go()') . ';}';
+			echo 'if(history.length>1){history.back();}else{' . ((isset($action[1][0]))? 'location=' . $this->_resolveCode($action[1][0]) : 'history.go()') . ';}';
 			break;
 		case 'forward':
 			echo 'history.forward();';
