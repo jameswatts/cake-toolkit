@@ -221,6 +221,18 @@ abstract class CtkFactory extends CtkObject {
 	}
 
 /**
+ * Determines if the factory has the specified object.
+ * 
+ * @param string $name Name of object to search for.
+ * @return boolean
+ */
+	final public function hasObject($name) {
+		$class = $this->_name . $name;
+		App::uses($class, ((!empty($this->_plugin))? $this->_plugin . '.' : '') . 'View/Factory/' . $this->_name . '/Objects/');
+		return class_exists($class);
+	}
+
+/**
  * Abstract method used to setup additional resources for the factory.
  * 
  * @return void
