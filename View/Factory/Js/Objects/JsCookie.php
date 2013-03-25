@@ -60,6 +60,7 @@ class JsCookie extends JsEvent {
 /**
  * Reads a value from the cookie.
  *
+ * @param string $name The cookie name.
  * @return JsCookie
  */
 	public function read($name) {
@@ -70,6 +71,10 @@ class JsCookie extends JsEvent {
 /**
  * Writes a value to the cookie.
  *
+ * @param string $name The cookie name.
+ * @param mixed $value The cookie value.
+ * @param string $expires The optional expires date.
+ * @param string $path The optional path, defaults to "/".
  * @return JsCookie
  */
 	public function write($name, $value, $expires = null, $path = null) {
