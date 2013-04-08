@@ -45,6 +45,7 @@ abstract class CtkView extends CtkObject {
  * An array of names of element factories to include.
  *
  * @var mixed A single name as a string or a list of names as an array.
+ * @see CtkView::addFactory()
  */
 	public $factories = array();
 
@@ -52,6 +53,7 @@ abstract class CtkView extends CtkObject {
  * An array containing the names of helpers this view uses.
  *
  * @var mixed A single name as a string or a list of names as an array.
+ * @see CtkView::addHelper()
  */
 	public $helpers = array();
 
@@ -59,6 +61,7 @@ abstract class CtkView extends CtkObject {
  * The name of the renderer to render the content.
  *
  * @var string The name of the renderer to use.
+ * @see CtkView::setRenderer()
  */
 	public $renderer = 'Ctk.Web';
 
@@ -66,6 +69,7 @@ abstract class CtkView extends CtkObject {
  * The optional name of a processor to post-process the content.
  *
  * @var string The name of the post-processor to use.
+ * @see CtkView::setProcessor()
  */
 	public $processor = null;
 
@@ -73,6 +77,7 @@ abstract class CtkView extends CtkObject {
  * The MIME-type of the output content.
  *
  * @var string The MIME-type to use.
+ * @see CtkView::setContentType()
  */
 	public $contentType = 'text/html';
 
@@ -80,6 +85,7 @@ abstract class CtkView extends CtkObject {
  * The character set of the output content.
  *
  * @var string The character set to use.
+ * @see CtkView::setCharset()
  */
 	public $charset = 'UTF-8';
 
@@ -87,6 +93,7 @@ abstract class CtkView extends CtkObject {
  * Theme name.
  *
  * @var string
+ * @see CtkView::setTheme()
  */
 	public $theme = null;
 
@@ -94,6 +101,7 @@ abstract class CtkView extends CtkObject {
  * Name of the layout to use.
  *
  * @var string
+ * @see CtkView::setLayout()
  */
 	public $layout = null;
 
@@ -104,6 +112,14 @@ abstract class CtkView extends CtkObject {
  * @var boolean
  */
 	public $autoLayout = true;
+
+/**
+ * Title for the layout, resolves to $title_for_layout.
+ *
+ * @var string
+ * @see CtkView::setTitle()
+ */
+	public $title = null;
 
 /**
  * The Cache configuration View will use to store cached elements. Changing this will change
@@ -193,42 +209,20 @@ abstract class CtkView extends CtkObject {
 		$this->_baseView = $baseView;
 		$this->_inheritArrayProperties(array('factories', 'helpers', 'viewVars'));
 		if (is_string($this->renderer)) {
-			list($plugin, $name) = pluginSplit($this->renderer);
-			$class = $name . 'Renderer';
-			App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Renderer');
-			if (!class_exists($class)) {
-				throw new CakeException(sprintf('Unknown renderer: %s', $class));
-			}
-			$this->_renderer = new $class($this->renderer, $this);
+			$this->setRenderer($this->renderer);
 		} else {
 			throw new CakeException('No renderer defined');
 		}
 		if (is_string($this->processor)) {
-			list($plugin, $name) = pluginSplit($this->processor);
-			$class = $name . 'Processor';
-			App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Processor');
-			if (!class_exists($class)) {
-				throw new CakeException(sprintf('Unknown processor: %s', $class));
-			}
-			$this->_processor = new $class($this->processor, $this);
+			$this->setProcessor($this->processor);
 		}
 		$this->_factories = (empty($this->factories))? array() : Set::normalize((array) $this->factories);
-		foreach ($this->_factories as $key => $value) {
-			$isAlias = (is_array($value) && isset($value['className']));
-			list($plugin, $name) = pluginSplit(($isAlias)? $value['className'] : $key);
-			$class = $name . 'Factory';
-			App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Factory');
-			if (!class_exists($class)) {
-				throw new CakeException(sprintf('Unknown factory: %s', $class));
-			}
-			$property = ($isAlias)? $key : $name;
-			$this->$property = new $class($this, $name, $plugin, $value);
-			$this->$property->setup();
+		foreach ($this->_factories as $factory => $settings) {
+			$this->addFactory($factory, $settings);
 		}
 		$helpers = HelperCollection::normalizeObjectArray(array_merge($this->_baseView->helpers, (empty($this->helpers))? array() : Set::normalize((array) $this->helpers)));
 		foreach ($helpers as $name => $properties) {
-			list($plugin, $class) = pluginSplit($properties['class']);
-			$this->_helpers[$class] = new CtkHelper($class, $this->_baseView->Helpers->load($properties['class'], $properties['settings']), $this);
+			$this->addHelper($properties['class'], $properties['settings']);
 		}
 		if (is_string($this->contentType)) {
 			$this->_baseView->response->type($this->contentType);
@@ -245,13 +239,16 @@ abstract class CtkView extends CtkObject {
 		if (!$this->autoLayout) {
 			$this->_baseView->autoLayout = false;
 		}
+		if (is_string($this->title)) {
+			$this->viewVars['title_for_layout'] = $this->title;
+		}
 		if (is_string($this->elementCache)) {
 			$this->_baseView->elementCache = $this->elementCache;
 		}
 		if (is_array($this->elementCacheSettings)) {
 			$this->_baseView->elementCacheSettings = $this->elementCacheSettings;
 		}
-		$this->_baseView->viewVars = array_merge((array) $this->viewVars, (array) $this->_baseView->viewVars);
+		$this->_baseView->viewVars = array_merge((array) $this->_baseView->viewVars, (array) $this->viewVars);
 	}
 
 /**
@@ -306,12 +303,46 @@ abstract class CtkView extends CtkObject {
 	}
 
 /**
+ * Adds a factory for use in this view.
+ *
+ * @param string $factory The factory to load.
+ * @param array $settings The optional settings for the factory.
+ * @return CtkView
+ */
+	final public function addFactory($factory, $settings = array()) {
+		$isAlias = (is_array($settings) && isset($settings['className']));
+		list($plugin, $name) = pluginSplit(($isAlias)? $settings['className'] : $factory);
+		$class = $name . 'Factory';
+		App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Factory');
+		if (!class_exists($class)) {
+			throw new CakeException(sprintf('Unknown factory: %s', $class));
+		}
+		$property = ($isAlias)? $factory : $name;
+		$this->$property = new $class($this, $name, $plugin, $settings);
+		$this->$property->setup();
+		return $this;
+	}
+
+/**
  * Returns the helpers loaded for this view.
  *
  * @return array
  */
 	final public function getHelpers() {
 		return $this->_helpers;
+	}
+
+/**
+ * Adds a helper for use in this view.
+ *
+ * @param string $helper The helper to load.
+ * @param array $settings The optional settings for the helper.
+ * @return CtkView
+ */
+	final public function addHelper($helper, $settings = array()) {
+		list($plugin, $class) = pluginSplit($helper);
+		$this->_helpers[$class] = new CtkHelper($class, $this->_baseView->Helpers->load($helper, $settings), $this);
+		return $this;
 	}
 
 /**
@@ -324,12 +355,48 @@ abstract class CtkView extends CtkObject {
 	}
 
 /**
+ * Sets the renderer for this view.
+ *
+ * @param string $renderer The renderer to use.
+ * @return CtkView
+ */
+	final public function setRenderer($renderer) {
+		$this->renderer = (string) $renderer;
+		list($plugin, $name) = pluginSplit($this->renderer);
+		$class = $name . 'Renderer';
+		App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Renderer');
+		if (!class_exists($class)) {
+			throw new CakeException(sprintf('Unknown renderer: %s', $class));
+		}
+		$this->_renderer = new $class($this->renderer, $this);
+		return $this;
+	}
+
+/**
  * Returns the post-processor for this view.
  *
  * @return CtkProcessor
  */
 	final public function getProcessor() {
 		return $this->_processor;
+	}
+
+/**
+ * Sets the post-processor for this view.
+ *
+ * @param string $processor The post-processor to use.
+ * @return CtkView
+ */
+	final public function setProcessor($processor) {
+		$this->_processor = (string) $processor;
+		list($plugin, $name) = pluginSplit($this->processor);
+		$class = $name . 'Processor';
+		App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Processor');
+		if (!class_exists($class)) {
+			throw new CakeException(sprintf('Unknown processor: %s', $class));
+		}
+		$this->_processor = new $class($this->processor, $this);
+		return $this;
 	}
 
 /**
@@ -375,6 +442,108 @@ abstract class CtkView extends CtkObject {
  */
 	final public function getValidationErrors() {
 		return $this->_baseView->validationErrors;
+	}
+
+/**
+ * Returns the Content-Type used for this view.
+ *
+ * @return string
+ */
+	final public function getContentType() {
+		return $this->contentType;
+	}
+
+/**
+ * Sets the Content-Type to use for this view.
+ *
+ * @param string $contentType The Content-Type to use.
+ * @return CtkView
+ */
+	final public function setContentType($contentType) {
+		$this->contentType = (string) $contentType;
+		$this->_baseView->response->type($this->contentType);
+		return $this;
+	}
+
+/**
+ * Returns the character set used for this view.
+ *
+ * @return string
+ */
+	final public function getCharset() {
+		return $this->charset;
+	}
+
+/**
+ * Sets the character set to use for this view.
+ *
+ * @param string $charset The character set to use.
+ * @return CtkView
+ */
+	final public function setCharset($charset) {
+		$this->charset = (string) $charset;
+		$this->_baseView->response->charset($this->charset);
+		return $this;
+	}
+
+/**
+ * Returns the theme used for this view.
+ *
+ * @return string
+ */
+	final public function getTheme() {
+		return $this->_baseView->theme;
+	}
+
+/**
+ * Sets the theme to use for this view.
+ *
+ * @param string $theme The theme to use.
+ * @return CtkView
+ */
+	final public function setTheme($theme) {
+		$this->_baseView->theme = $this->theme = (string) $theme;
+		return $this;
+	}
+
+/**
+ * Returns the layout used for this view.
+ *
+ * @return string
+ */
+	final public function getLayout() {
+		return $this->_baseView->layout;
+	}
+
+/**
+ * Sets the layout to use for this view.
+ *
+ * @param string $layout The layout to use.
+ * @return CtkView
+ */
+	final public function setLayout($layout) {
+		$this->_baseView->layout = $this->layout = (string) $layout;
+		return $this;
+	}
+
+/**
+ * Returns the title for the layout.
+ *
+ * @return string
+ */
+	final public function getTitle() {
+		return (array_key_exists('title_for_layout', $this->_baseView->viewVars))? $this->_baseView->viewVars['title_for_layout'] : '';
+	}
+
+/**
+ * Sets the title for the layout.
+ *
+ * @param string $title The title to set for the layout.
+ * @return CtkView
+ */
+	final public function setTitle($title) {
+		$this->_baseView->viewVars['title_for_layout'] = $this->title = (string) $title;
+		return $this;
 	}
 
 /**
