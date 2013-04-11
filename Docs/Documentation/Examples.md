@@ -6,6 +6,8 @@ The following are a few basic examples of common usage in the **Cake Toolkit**.
 Creating a Div
 --------------
 
+Create a HTML div object and add it to the View.
+
 ```php
 $myDiv = $this->Html->Div();
 
@@ -14,6 +16,8 @@ $this->add($myDiv);
 
 Creating a Div with a Span
 --------------------------
+
+Create a HTML div object and add a HTML span object as a child.
 
 ```php
 $myDiv = $this->Html->Div();
@@ -26,6 +30,8 @@ $myDiv->add($mySpan);
 Chaining Objects
 ----------------
 
+Create various objects as children of each other in a sequence.
+
 ```php
 $myDiv->Span()->Em()->Strong();
 ```
@@ -35,12 +41,16 @@ $myDiv->Span()->Em()->Strong();
 Setting a Unique ID
 -------------------
 
+Set a unique ID on an object, by default all objects have a unique ID assigned to them.
+
 ```php
 $myDiv->setId('myId');
 ```
 
 Setting Parameters
 ------------------
+
+Set the "text" configuration parameter on a HTML div object, this will render as text inside the element.
 
 ```php
 $myDiv = $this->Html->Div(array(
@@ -52,6 +62,8 @@ $myDiv->text = 'Updated';
 
 Special Parameters
 ------------------
+
+A collection of special configuration parameters available on all objects.
 
 ```php
 $mySpan = $this->Html->Span(array(
@@ -76,12 +88,16 @@ $mySpan = $this->Html->Span(array(
 Copying an Object
 -----------------
 
+Make a copy of an object, the unique ID is automatically updated.
+
 ```php
 $myDivCopy = $myDiv->copy();
 ```
 
 Adding Multiple Objects
 -----------------------
+
+Add multiple objects as children.
 
 ```php
 $myDiv->addMany(array(
@@ -96,6 +112,8 @@ $myDiv->addMany(array(
 Adding Objects Before and After
 -------------------------------
 
+Add objects before or after a specific child.
+
 ```php
 $myDiv->addBefore($newSpan, $mySpan);
 $myDiv->addAfter($newSpan, $mySpan);
@@ -104,12 +122,16 @@ $myDiv->addAfter($newSpan, $mySpan);
 Conditionally Adding Objects
 ----------------------------
 
+Add an object based upon a condition, which will only be added if the condition resolves to true.
+
 ```php
 $myDiv->addIf($condition === true, $mySpan);
 ```
 
 Adding Objects from a Callback
 ------------------------------
+
+Add an object from a callback function, any "callable" function in *PHP* is valid.
 
 ```php
 $myDiv->addWhile(function(&$parent, &$view, &$data, $i) {
@@ -124,12 +146,16 @@ $myDiv->addWhile(function(&$parent, &$view, &$data, $i) {
 Inherit Children
 ----------------
 
+Inherit the children from another object, these are not duplicated but moved to the new parent.
+
 ```php
 $myDiv->addFrom($otherDiv);
 ```
 
 Replacing and Removing Children
 -------------------------------
+
+Replace or remove children.
 
 ```php
 $myDiv->replaceChild($mySpan, $otherSpan);
@@ -138,6 +164,8 @@ $myDiv->removeChild($otherSpan);
 
 Traversing Objects
 ------------------
+
+Various methods for traversing parents and children.
 
 ```php
 $parent = $myUl->getParent();
@@ -155,6 +183,8 @@ $myUl->each(function(&$child, &$parent, &$view, &$data, $i) {
 Binding an Event
 ----------------
 
+Bind a *JavaScript* alert event to an object.
+
 ```php
 $myButton->bind('click', $this->Js->Alert(array(
 	'text' => __('Hello World')
@@ -163,6 +193,8 @@ $myButton->bind('click', $this->Js->Alert(array(
 
 Redirecting
 -----------
+
+Bind a *JavaScript* redirection event to an object.
 
 ```php
 $myButton->bind('click', $this->Js->Redirect(array(
@@ -176,6 +208,8 @@ $myButton->bind('click', $this->Js->Redirect(array(
 Content via Ajax
 ----------------
 
+Load the content of an object via Ajax.
+
 ```php
 $myButton->bind('click', $this->Js->Element(array(
 	'node' => $myDiv
@@ -187,6 +221,8 @@ $myButton->bind('click', $this->Js->Element(array(
 
 Including an Element
 --------------------
+
+Include a *CakePHP* element in a CTK based View.
 
 ```php
 $myDiv = $this->Html->Div();
@@ -201,6 +237,8 @@ $myDiv->add($exampleElement);
 Appending to View Blocks
 ------------------------
 
+Append a HTML script to the "script" view block.
+
 ```php
 $this->append('script', $this->Html->Script(array(
 	'src' => 'example.js'
@@ -209,6 +247,8 @@ $this->append('script', $this->Html->Script(array(
 
 Using a Helper
 --------------
+
+Use an example helper in a CTK based View.
 
 ```php
 $myDiv = $this->Html->Div();
