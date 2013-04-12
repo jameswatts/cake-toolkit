@@ -1,9 +1,9 @@
 View
 ====
 
-When using the **Cake Toolkit**, your View is represented by the **CtkView** class, which provides the foundation to build the View using object-oriented code, and to apply the required ouput settings. This differs from the normal system in *CakePHP*, where the View is a static file with procedural *PHP* code, possibly mixed with *HTML*, *CSS* and *JavaScript*.
+When using the **Cake Toolkit**, your View is represented by the [CtkView](../../View/CtkView.php) class, which provides the foundation to build the View using object-oriented code, and to apply the required ouput settings. This differs from the normal system in *CakePHP*, where the View is a static file with procedural *PHP* code, possibly mixed with *HTML*, *CSS* and *JavaScript*.
 
-Enabling CTK for your Views can be accomplished in **2** ways, either by extending the **CtkAppController**, for example:
+Enabling CTK for your Views can be accomplished in **2** ways, either by extending the [CtkAppController](../../Controller/CtkAppController.php), for example:
 
 ```php
 App::uses('CtkAppController', 'Ctk.Controller');
@@ -13,7 +13,7 @@ class ExampleController extends CtkAppController {
 }
 ```
 
-Or, by using the **Ctk.App** component. The difference between the two options is that by using the component you can allow some actions to continue using the legacy ".ctp" files, by including them in the "ignoreAction" setting of the component, for example:
+Or, by using the [Ctk.App](../../Controller/Component/AppComponent.php) component. The difference between the two options is that by using the component you can allow some actions to continue using the legacy ".ctp" files, by including them in the "ignoreAction" setting of the component, for example:
 
 ```php
 public $components = array(
@@ -36,7 +36,7 @@ For example, the View file for the "index" action in the "Example" Controller wo
 app/View/Example/Ctk/IndexView.php
 ```
 
-In the contents of the file, the definition of the class requires that the **CtkView** class be included from "Ctk.View". Once available, the class should be declared using the same name as the file, and extending **CtkView**. So, from the previous example:
+In the contents of the file, the definition of the class requires that the [CtkView](../../View/CtkView.php) class be included from "Ctk.View". Once available, the class should be declared using the same name as the file, and extending [CtkView](../../View/CtkView.php). So, from the previous example:
 
 ```php
 App::uses('CtkView', 'Ctk.View');
@@ -104,7 +104,7 @@ More information on data validation can be found [here](http://book.cakephp.org/
 Accessing the Base View
 -----------------------
 
-While the **CtkView** class is used to define your View object, it's not the class responsible for altering the existing View layer in *CakePHP*. This class is accessible via the **getBaseView()** method, which returns the underlying View object used by the framework to handle the presentation logic.
+While the [CtkView](../../View/CtkView.php) class is used to define your View object, it's not the class responsible for altering the existing View layer in *CakePHP*. This class is accessible via the **getBaseView()** method, which returns the underlying View object used by the framework to handle the presentation logic.
 
-The **CtkBaseView** class extends the core [View](http://book.cakephp.org/2.0/en/views.html#view-api) class. The scope of this object is the same as that in the static ".ctp" files. Accessing this object from your View in CTK is functionaly the same as referencing *$this* in normal Views.
+The [CtkBaseView](../../View/CtkBaseView.php) class extends the core [View](http://book.cakephp.org/2.0/en/views.html#view-api) class. The scope of this object is the same as that in the static ".ctp" files. Accessing this object from your View in CTK is functionaly the same as referencing *$this* in normal Views.
 
