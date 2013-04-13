@@ -17,6 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CakeValidationSet', 'Model/Validator');
 App::uses('CtkBuildable', 'Ctk.Lib');
 App::uses('CtkBindable', 'Ctk.Lib');
 App::uses('CtkRenderable', 'Ctk.Lib');
@@ -30,7 +31,7 @@ App::uses('CtkHelperView', 'Ctk.View');
  *
  * @package       Ctk.Lib
  */
-abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,CtkRenderable {
+abstract class CtkNode extends CtkObject implements CtkBuildable, CtkBindable, CtkRenderable {
 
 /**
  * The factory used to instanciate this object.
@@ -38,6 +39,13 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @var CtkFactory The instance of the factory.
  */
 	protected $_factory = null;
+
+/**
+ * The name of this object.
+ *
+ * @var string The name of the object.
+ */
+	protected $_name = null;
 
 /**
  * The template to use for this object.
@@ -52,6 +60,28 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  * @var array The template configuration parameters.
  */
 	protected $_params = array();
+
+/**
+ * The validation rules for configuration parameters, where the key is the parameter 
+ * name and the value the rule as a string or an array.
+ *
+ * @var array The validation rules.
+ */
+	protected $_validate = array();
+
+/**
+ * The internal cache of validation sets used to validate parameters.
+ *
+ * @var array The validation sets.
+ */
+	protected $_validation = array();
+
+/**
+ * The errors logged from an invalid configuration parameter.
+ *
+ * @var array The validation errors.
+ */
+	protected $_validationErrors = array();
 
 /**
  * The type of node this object represents.
@@ -100,7 +130,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  *
  * @var array List of parents allowed by name, or NULL for no limit.
  */
-	protected $_limitParent = null;
+	protected $_limitParent = array();
 
 /**
  * Determines if the node accepts child nodes.
@@ -114,7 +144,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  *
  * @var array List of children allowed by name, or NULL for no limit.
  */
-	protected $_limitChildren = null;
+	protected $_limitChildren = array();
 
 /**
  * Determines if the node accepts events.
@@ -134,8 +164,9 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 	final public function __construct(CtkFactory $factory, array $params = array()) {
 		parent::__construct();
 		$this->_factory = $factory;
+		$this->_name = str_replace($factory->getName(), '', get_class($this));
 		$this->_nodeId = uniqid('ID_');
-		$this->_inheritArrayProperties(array('_params'));
+		$this->_inheritArrayProperties(array('_params', '_validate', '_limitParent', '_limitChildren'));
 		$this->setParams($params);
 	}
 
@@ -170,7 +201,7 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
  *
  * @param string $name Name of the configuration parameter.
  * @param mixed $value Value of the configuration parameter.
- * @throws CakeException if the value for "_events" is not an array.
+ * @throws CakeException if the value for "_events" is not an array or they specified value does not validate.
  */
 	final public function __set($name, $value = null) {
 		if ($name === '_type') {
@@ -187,9 +218,14 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 					$this->bind($type, $event);
 				}
 			} else {
-				throw new CakeException('Value for _events parameter must be an array');
+				throw new CakeException('Value for "_events" parameter must be an array');
 			}
 		} else {
+			if (isset($this->_validate[(string) $name])) {
+				if (!$this->validateParam($name, $value)) {
+					throw new CakeException(sprintf('Value of "%s" parameter for %s is invalid, ' . implode(', ', $this->_validationErrors), $name, get_class($this)));
+				}
+			}
 			$this->_params[(string) $name] = $value;
 		}
 	}
@@ -236,6 +272,15 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 	}
 
 /**
+ * Returns the name of the object.
+ *
+ * @return string
+ */
+	final public function getName() {
+		return $this->_name;
+	}
+
+/**
  * Returns the factory which created the node.
  *
  * @return CtkFactory
@@ -273,6 +318,29 @@ abstract class CtkNode extends CtkObject implements CtkBuildable,CtkBindable,Ctk
 			$this->__set((string) $name, $value);
 		}
 		return $this;
+	}
+
+/**
+ * Validates the configuration parameter.
+ *
+ * @param string $name Name of the configuration parameter.
+ * @param mixed $value Value of the configuration parameter.
+ * @return boolean
+ */
+	final public function validateParam($name, $value = null) {
+		if (isset($this->_validate[$name])) {
+			if (!isset($this->_validation[$name])) {
+				$this->_validation[$name] = new CakeValidationSet($name, $this->_validate[$name]);
+			}
+			$errors = $this->_validation[$name]->validate(array($name => $value));
+			if (count($errors) > 0) {
+				foreach ($errors as $error) {
+					$this->_validationErrors[] = str_replace('field', 'parameter', lcfirst($error));
+				}
+				return false;
+			}
+		}
+		return true;
 	}
 
 /**
