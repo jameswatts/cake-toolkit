@@ -27,7 +27,7 @@ App::uses('CtkView', 'Ctk.View');
  *
  * @package       Ctk.Lib
  */
-class CtkContent extends CtkObject implements CtkBuildable,CtkRenderable {
+class CtkContent extends CtkObject implements CtkBuildable, CtkRenderable {
 
 /**
  * The current view requesting the content.
@@ -75,12 +75,21 @@ class CtkContent extends CtkObject implements CtkBuildable,CtkRenderable {
 	}
 
 /**
+ * Returns the name of the object.
+ *
+ * @return string
+ */
+	final public function getName() {
+		return 'Content';
+	}
+
+/**
  * Returns the factory which created the node.
  *
  * @return string
  */
 	final public function getFactory() {
-		return null;
+		return '';
 	}
 
 /**

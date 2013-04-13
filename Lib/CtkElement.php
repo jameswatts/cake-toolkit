@@ -27,7 +27,7 @@ App::uses('CtkView', 'Ctk.View');
  *
  * @package       Ctk.Lib
  */
-class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
+class CtkElement extends CtkObject implements CtkBuildable, CtkRenderable {
 
 /**
  * The current view requesting the Element.
@@ -109,6 +109,15 @@ class CtkElement extends CtkObject implements CtkBuildable,CtkRenderable {
 		} catch(Exception $e) {
 			trigger_error($e->getMessage(), E_USER_ERROR);
 		}
+	}
+
+/**
+ * Returns the name of the object.
+ *
+ * @return string
+ */
+	final public function getName() {
+		return 'Element';
 	}
 
 /**
