@@ -27,13 +27,23 @@ abstract class CtkObject extends Object {
 /**
  * The collection of singleton instances.
  *
+ * @static
  * @var array
  */
 	protected static $_instanceCollection = array();
 
 /**
+ * The registry of loaded classes.
+ *
+ * @static
+ * @var array
+ */
+	protected static $_classRegistry = array();
+
+/**
  * Gets a singleton of the current class.
  *
+ * @static
  * @param array $arguments Optional arguments for the class constructor.
  * @return CtkObject
  */
@@ -50,6 +60,7 @@ abstract class CtkObject extends Object {
 /**
  * Gets an instance of the current class.
  *
+ * @static
  * @param array $arguments Optional arguments for the class constructor.
  * @return CtkObject
  */
@@ -60,6 +71,28 @@ abstract class CtkObject extends Object {
 		} else {
 			return new static();
 		}
+	}
+
+/**
+ * Registers the called class in the registry.
+ *
+ * @static
+ * @param CtkObject $object Optional object to register to the class, otherwise true is stored.
+ * @return void
+ */
+	final public static function registerClass(CtkObject $object = null) {
+		self::$_classRegistry[get_called_class()] = (isset($object))? $object : true;
+	}
+
+/**
+ * Determines if a class has been previously registered.
+ *
+ * @static
+ * @param CtkObject $object Optional object to check against.
+ * @return boolean
+ */
+	final public static function isClassRegistered(CtkObject $object = null) {
+		return (isset(self::$_classRegistry[get_called_class()]) && (self::$_classRegistry[get_called_class()] === true || (isset($object) && self::$_classRegistry[get_called_class()] === $object)));
 	}
 
 /**
