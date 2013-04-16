@@ -19,6 +19,7 @@
 
 App::uses('Set', 'Utility');
 App::uses('HelperCollection', 'View');
+App::uses('CtkLoadable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkView', 'Ctk.View');
 App::uses('CtkHelper', 'Ctk.View');
@@ -28,7 +29,7 @@ App::uses('CtkHelper', 'Ctk.View');
  *
  * @package       Ctk.Lib
  */
-abstract class CtkFactory extends CtkObject {
+abstract class CtkFactory extends CtkObject implements CtkLoadable {
 
 /**
  * Settings for this factory.
@@ -230,6 +231,24 @@ abstract class CtkFactory extends CtkObject {
 		$class = $this->_name . $name;
 		App::uses($class, ((!empty($this->_plugin))? $this->_plugin . '.' : '') . 'View/Factory/' . $this->_name . '/Objects/');
 		return class_exists($class);
+	}
+
+/**
+ * Sets the factory as loaded.
+ * 
+ * @return void
+ */
+	final public function load() {
+		self::registerClass($this);
+	}
+
+/**
+ * Determines if the factory has been previously loaded.
+ * 
+ * @return boolean
+ */
+	final public function isLoaded() {
+		return self::isClassRegistered($this);
 	}
 
 /**
