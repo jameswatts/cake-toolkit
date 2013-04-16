@@ -902,13 +902,13 @@ abstract class CtkNode extends CtkObject implements CtkBuildable, CtkBindable, C
 	}
 
 /**
- * Loads the template for the node.
+ * Parses the template for the node.
  *
  * @param string $path Path to the template.
  * @return string
  * @throws CakeException if template is not found.
  */
-	final public function load($path) {
+	final public function template($path) {
 		if (!is_string($path)) {
 			throw new CakeException('Template path must be a string');
 		}

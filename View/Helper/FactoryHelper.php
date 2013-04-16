@@ -106,6 +106,7 @@ class FactoryHelper extends Helper {
 			}
 			$factory = new $class($this->_view, $name, $plugin, $value);
 			$factory->setup();
+			$factory->load();
 			$property = ($isAlias)? $key : $name;
 			$this->$property = new CtkFactoryAdaptor($factory);
 		}

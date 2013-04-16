@@ -87,6 +87,7 @@ abstract class CtkEvent extends CtkObject implements CtkRenderable {
  * @param array $params The optional configuration parameters for the template.
  */
 	final public function __construct(CtkFactory $factory, array $params = array()) {
+		parent::__construct();
 		$this->_factory = $factory;
 		$this->_name = str_replace($factory->getName(), '', get_class($this));
 		$this->_inheritArrayProperties(array('_params', '_validate'));
@@ -232,20 +233,22 @@ abstract class CtkEvent extends CtkObject implements CtkRenderable {
 	}
 
 /**
- * Loads the template for the event.
+ * Parses the template for the event.
  *
  * @param string $path Path to the template.
  * @return string
  * @throws CakeException if template is not found.
  */
-	final public function load($path) {
+	final public function template($path) {
+		if (!is_string($path)) {
+			throw new CakeException('Template path must be a string');
+		}
 		if (is_file($path) && is_readable($path)) {
 			ob_start();
 			require $path;
 			return ob_get_clean();
-		} else {
-			throw new CakeException(sprintf('Template not found: %s', $path));
 		}
+		throw new CakeException(sprintf('Template not found: %s', $path));
 	}
 
 /**

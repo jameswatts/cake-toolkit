@@ -394,12 +394,12 @@ class CtkElement extends CtkObject implements CtkBuildable, CtkRenderable {
 	}
 
 /**
- * Loads the template for the node.
+ * Parses the template for the node.
  *
  * @param string $path Path to the template.
  * @return string
  */
-	final public function load($path) {
+	final public function template($path) {
 		return '';
 	}
 
