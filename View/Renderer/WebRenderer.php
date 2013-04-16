@@ -28,6 +28,13 @@ App::uses('CtkRenderer', 'Ctk.Lib');
 class WebRenderer extends CtkRenderer {
 
 /**
+ * Method used to setup additional resources for the renderer.
+ * 
+ * @return void
+ */
+	public function setup() {}
+
+/**
  * Renders the view objects and returns the generated content.
  * 
  * @param CtkObject $object The object being rendered.
@@ -36,7 +43,7 @@ class WebRenderer extends CtkRenderer {
 	public function render(CtkObject $object) {
 		$plugin = $object->getFactory()->getPlugin();
 		$path = ((!empty($plugin))? APP . 'Plugin' . DS . $plugin . DS . 'View' : dirname(__DIR__)) . DS . 'Factory' . DS . $object->getFactory()->getName() . DS . 'Templates' . DS . $object->getTemplate() . '.ctp';
-		return $object->load($path);
+		return $object->template($path);
 	}
 }
 

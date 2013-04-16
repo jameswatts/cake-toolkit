@@ -210,11 +210,21 @@ abstract class CtkView extends CtkObject {
 		$this->_inheritArrayProperties(array('factories', 'helpers', 'viewVars'));
 		if (is_string($this->renderer)) {
 			$this->setRenderer($this->renderer);
+		} else if (is_array($this->renderer)) {
+			foreach ($this->renderer as $renderer => $settings) {
+				$this->setRenderer($renderer, $settings);
+			}
 		} else {
 			throw new CakeException('No renderer defined');
 		}
-		if (is_string($this->processor)) {
-			$this->setProcessor($this->processor);
+		if (isset($this->processor)) {
+			if (is_string($this->processor)) {
+				$this->setProcessor($this->processor);
+			} else if (is_array($this->processor)) {
+				foreach ($this->processor as $processor => $settings) {
+					$this->setProcessor($processor, $settings);
+				}
+			}
 		}
 		$this->_factories = (empty($this->factories))? array() : Set::normalize((array) $this->factories);
 		foreach ($this->_factories as $factory => $settings) {
@@ -320,6 +330,7 @@ abstract class CtkView extends CtkObject {
 		$property = ($isAlias)? $factory : $name;
 		$this->$property = new $class($this, $name, $plugin, $settings);
 		$this->$property->setup();
+		$this->$property->load();
 		return $this;
 	}
 
@@ -358,17 +369,21 @@ abstract class CtkView extends CtkObject {
  * Sets the renderer for this view.
  *
  * @param string $renderer The renderer to use.
+ * @param array $settings The optional settings for the renderer.
  * @return CtkView
  */
-	final public function setRenderer($renderer) {
+	final public function setRenderer($renderer, $settings = array()) {
 		$this->renderer = (string) $renderer;
-		list($plugin, $name) = pluginSplit($this->renderer);
+		$isAlias = (is_array($settings) && isset($settings['className']));
+		list($plugin, $name) = pluginSplit(($isAlias)? $settings['className'] : $renderer);
 		$class = $name . 'Renderer';
 		App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Renderer');
 		if (!class_exists($class)) {
 			throw new CakeException(sprintf('Unknown renderer: %s', $class));
 		}
-		$this->_renderer = new $class($this->renderer, $this);
+		$this->_renderer = new $class($this, $name, $plugin, $settings);
+		$this->_renderer->setup();
+		$this->_renderer->load();
 		return $this;
 	}
 
@@ -385,17 +400,21 @@ abstract class CtkView extends CtkObject {
  * Sets the post-processor for this view.
  *
  * @param string $processor The post-processor to use.
+ * @param array $settings The optional settings for the processor.
  * @return CtkView
  */
-	final public function setProcessor($processor) {
-		$this->_processor = (string) $processor;
-		list($plugin, $name) = pluginSplit($this->processor);
+	final public function setProcessor($processor, $settings = array()) {
+		$this->processor = (string) $processor;
+		$isAlias = (is_array($settings) && isset($settings['className']));
+		list($plugin, $name) = pluginSplit(($isAlias)? $settings['className'] : $processor);
 		$class = $name . 'Processor';
 		App::uses($class, ((!empty($plugin))? $plugin . '.' : '') . 'View/Processor');
 		if (!class_exists($class)) {
 			throw new CakeException(sprintf('Unknown processor: %s', $class));
 		}
-		$this->_processor = new $class($this->processor, $this);
+		$this->_processor = new $class($this, $name, $plugin, $settings);
+		$this->_processor->setup();
+		$this->_processor->load();
 		return $this;
 	}
 

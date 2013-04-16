@@ -83,6 +83,13 @@ class SchemaRenderer extends CtkRenderer {
 	}
 
 /**
+ * Method used to setup additional resources for the renderer.
+ * 
+ * @return void
+ */
+	public function setup() {}
+
+/**
  * Renders the view objects as nodes in an abstract schema.
  * 
  * @param CtkObject $object The object being rendered.
