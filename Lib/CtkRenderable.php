@@ -25,15 +25,15 @@
 interface CtkRenderable {
 
 /**
- * Loads the template for the node.
+ * Parses the template for the node.
  *
  * @param string $path Path to the template.
  * @return string
  */
-	public function load($path);
+	public function template($path);
 
 /**
- * Renders the node using the the view renderer.
+ * Renders the node using the the View renderer.
  *
  * @return string
  */
