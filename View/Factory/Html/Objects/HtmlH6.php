@@ -32,8 +32,7 @@ class HtmlH6 extends HtmlH {
  * @var array The template configuration parameters.
  */
 	protected $_params = array(
-		'size' => 6,
-		'text' => ''
+		'size' => 6
 	);
 }
 

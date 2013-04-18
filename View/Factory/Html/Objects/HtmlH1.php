@@ -32,8 +32,7 @@ class HtmlH1 extends HtmlH {
  * @var array The template configuration parameters.
  */
 	protected $_params = array(
-		'size' => 1,
-		'text' => ''
+		'size' => 1
 	);
 }
 

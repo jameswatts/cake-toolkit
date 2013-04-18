@@ -32,8 +32,7 @@ class HtmlH3 extends HtmlH {
  * @var array The template configuration parameters.
  */
 	protected $_params = array(
-		'size' => 3,
-		'text' => ''
+		'size' => 3
 	);
 }
 

@@ -32,8 +32,7 @@ class HtmlH4 extends HtmlH {
  * @var array The template configuration parameters.
  */
 	protected $_params = array(
-		'size' => 4,
-		'text' => ''
+		'size' => 4
 	);
 }
 

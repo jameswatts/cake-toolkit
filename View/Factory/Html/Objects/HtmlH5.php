@@ -32,8 +32,7 @@ class HtmlH5 extends HtmlH {
  * @var array The template configuration parameters.
  */
 	protected $_params = array(
-		'size' => 5,
-		'text' => ''
+		'size' => 5
 	);
 }
 

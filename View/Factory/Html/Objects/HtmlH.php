@@ -38,7 +38,10 @@ abstract class HtmlH extends HtmlElement {
  *
  * @var array The template configuration parameters.
  */
-	protected $_params = array();
+	protected $_params = array(
+		'size' => 1,
+		'text' => ''
+	);
 
 /**
  * The type of element this object represents.

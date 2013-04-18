@@ -32,8 +32,7 @@ class HtmlH2 extends HtmlH {
  * @var array The template configuration parameters.
  */
 	protected $_params = array(
-		'size' => 2,
-		'text' => ''
+		'size' => 2
 	);
 }
 
