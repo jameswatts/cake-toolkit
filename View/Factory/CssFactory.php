@@ -23,9 +23,16 @@ App::uses('CtkFactory', 'Ctk.Lib');
  * Creates a factory to generate CSS definitions.
  *
  * @package       Ctk.View
+ *
+ * @method \CssBlock Block($params = array())
+ * @method \CssDeclaration Declaration($params = array())
+ * @method \CssFontface Fontface($params = array())
+ * @method \CssMedia Media($params = array())
+ * @method \CssRule Rule($params = array())
  */
 class CssFactory extends CtkFactory {
 
 	public function setup() {}
+
 }
 
