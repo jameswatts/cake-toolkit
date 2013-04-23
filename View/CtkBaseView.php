@@ -190,8 +190,8 @@ class CtkBaseView extends View {
 			$this->stats['memoryAfter'] = memory_get_usage();
 			$unit = array('bytes', 'KB', 'MB', 'GB');
 			$this->stats['renderTime'] = round(($this->stats['endTime'][1]+$this->stats['endTime'][0])-($this->stats['startTime'][1]+$this->stats['startTime'][0]), 3);
-			$this->stats['totalMemory'] = round($this->stats['memoryAfter']/pow(1024, ($i = floor(log($this->stats['memoryAfter'], 1024)))), 2) . $unit[$i];
-			$this->stats['memoryUsage'] = round(($this->stats['memoryAfter']-$this->stats['memoryBefore'])/pow(1024, ($i = floor(log(($this->stats['memoryAfter']-$this->stats['memoryBefore']), 1024)))), 2) . $unit[$i];
+			$this->stats['totalMemory'] = round($this->stats['memoryAfter']/pow(1024, ($i = floor(log($this->stats['memoryAfter'], 1024)))), 2) . ((isset($unit[$i]))? $unit[$i] : $unit[2]);
+			$this->stats['memoryUsage'] = round(($this->stats['memoryAfter']-$this->stats['memoryBefore'])/pow(1024, ($i = floor(log(($this->stats['memoryAfter']-$this->stats['memoryBefore']), 1024)))), 2) . ((isset($unit[$i]))? $unit[$i] : $unit[2]);
 			$this->_controller->response->header('Ctk-Info', 'controller=' . $this->name . ', action=' . $this->view . ', render-time=' . $this->stats['renderTime'] . ', total-memory=' . $this->stats['totalMemory'] . ', memory-usage=' . $this->stats['memoryUsage']);
 		}
 		$this->assign('content', $content);
