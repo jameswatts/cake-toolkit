@@ -61,7 +61,13 @@ class IndexView extends CtkView {
 }
 ```
 
-It's also possible to use the special *Factory* helper to import objects from the **Cake Toolkit** into normal static ".ctp" Views, bringing the power of the plugin to your existing View code.
+This file is saved as "IndexView.php" in a sub-directory of your View directory called ```/Ctk```. This helps maintain your class files separate from your normal ".ctp" Views. So the path to your View class would be:
+
+```
+app/View/Example/Ctk/IndexView.php
+```
+
+It's also possible to use the special *Factory* helper to import objects from the **Cake Toolkit** into normal static ".ctp" Views, bringing the power of the plugin to your existing front-end code.
 
 ```php
 public $helpers = array(
@@ -79,7 +85,7 @@ You can then use the objects within your markup, similar to when using the HTML 
 </div>
 ```
 
-To get up and running quickly check out the [Quick Start](https://github.com/jameswatts/cake-toolkit/wiki/Quick-Start) or [Hello World](https://github.com/jameswatts/cake-toolkit/wiki/Hello-World) tutorials from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki).
+To get up and running quickly check out the [Quick Start](Docs/Tutorials/Quick-Start.md) or [Hello World](Docs/Tutorials/Hello-World.md) tutorials from the [documentation](Docs/Home.md).
 
 Requirements
 ------------
@@ -96,7 +102,7 @@ Once installed, the **Cake Toolkit** has a homepage built into the *CakePHP* plu
 http://example.com/ctk
 ```
 
-Full documentation, as well as tutorials, are also available from the [wiki](https://github.com/jameswatts/cake-toolkit/wiki) section of this repository.
+Full documentation, as well as tutorials, are also available in the [Docs](Docs/Home.md) directory of this repository.
 
 Performance
 -----------
@@ -208,6 +214,23 @@ Support
 -------
 
 For support, bugs and feature requests, please use the [issues](https://github.com/jameswatts/cake-toolkit/issues) section of this repository.
+
+Contributing
+------------
+
+If you'd like to contribute new features, enhancements or bug fixes to the code base just follow these steps:
+
+* Create a [GitHub](https://github.com/signup/free) account, if you don't own one already
+* Then, [fork](https://help.github.com/articles/fork-a-repo) the [Cake Toolkit](https://github.com/jameswatts/cake-toolkit) repository to your account
+* Create a new [branch](https://help.github.com/articles/creating-and-deleting-branches-within-your-repository) from the *develop* branch in your forked repository
+* Modify the existing code, or add new code to your branch, making sure you follow the [CakePHP Coding Standards](http://book.cakephp.org/2.0/en/contributing/cakephp-coding-conventions.html)
+* Modify or add [unit tests](http://book.cakephp.org/2.0/en/development/testing.html) which confirm the correct functionality of your code (requires [PHPUnit](http://www.phpunit.de/manual/current/en/installation.html) 3.5+)
+* Consider using the [CakePHP Code Sniffer](https://github.com/cakephp/cakephp-codesniffer) to check the quality of your code
+* When ready, make a [pull request](http://help.github.com/send-pull-requests/) to the main repository
+
+There may be some discussion reagrding your contribution to the repository before any code is merged in, so be prepared to provide feedback on your contribution if required.
+
+A list of contributors to the **Cake Toolkit** can be found [here](https://github.com/jameswatts/cake-toolkit/contributors).
 
 Licence
 -------
