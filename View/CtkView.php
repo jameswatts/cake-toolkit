@@ -955,14 +955,14 @@ abstract class CtkView extends CtkObject {
  * @return string Rendered content
  */
 	final public function render() {
+		$content = '';
+		foreach ($this->_childNodes as $node) {
+			$content .= $node->render();
+		}
 		foreach ($this->_blocks as $block => $nodes) {
 			foreach ($nodes as $node) {
 				$this->_baseView->append((string) $block, $node->render());
 			}
-		}
-		$content = '';
-		foreach ($this->_childNodes as $node) {
-			$content .= $node->render();
 		}
 		return $content;
 	}
