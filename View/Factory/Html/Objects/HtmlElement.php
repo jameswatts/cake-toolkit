@@ -18,6 +18,7 @@
  */
 
 App::uses('CtkNode', 'Ctk.Lib');
+App::uses('CtkContent', 'Ctk.Lib');
 App::uses('CtkEvent', 'Ctk.Lib');
 
 /**
@@ -54,7 +55,8 @@ abstract class HtmlElement extends CtkNode {
 		'spellcheck' => null,
 		'style' => null,
 		'tabindex' => null,
-		'title' => null
+		'title' => null,
+		'buffer' => null
 	);
 
 /**
@@ -177,35 +179,41 @@ abstract class HtmlElement extends CtkNode {
  * @return string
  */
 	final public function parseEvents() {
-		$content = '';
-		$hasEvents = $this->hasEvents();
-		$allowsEvents = $this->allowsEvents();
-		$nodeEvents = $this->getEvents();
-		if ($hasEvents || (isset($this->events) && $allowsEvents)) {
-			$content .= '<script type="text/javascript">(function(){';
-		}
-		if ($hasEvents) {
-			foreach ($nodeEvents as $type => $events) {
-				foreach ($events as $event) {
-					$code = $event->render();
-					$callback = uniqid('JS_');
-					$content .= "var node=document.getElementById('{$this->getId()}'),{$callback}=function(){{$code}};if(node.addEventListener){node.addEventListener('{$type}',function(){return {$callback}.apply(node,arguments);});}else if(node.attachEvent){node.attachEvent('on{$type}',function(){return {$callback}.apply(node,arguments);});}else{node['on{$type}']=function(){return {$callback}.apply(node,arguments);};}";
+		$listeners = array();
+		$events = $this->getEvents();
+		if ($this->hasEvents()) {
+			foreach ($events as $type => $objects) {
+				foreach ($objects as $event) {
+					$listeners[] = $this->JsFactory->Listener(array(
+						'node' => $this,
+						'type' => $type,
+						'code' => $event
+					));
 				}
 			}
 		}
 		if (isset($this->events)) {
-			if ($allowsEvents) {
+			if ($this->allowsEvents()) {
 				foreach ($this->events as $type => $event) {
-					$code = ($event instanceof CtkEvent)? $event->render() : (string) $event;
-					$callback = uniqid('JS_');
-					$content .= "var node=document.getElementById('{$this->getId()}'),{$callback}=function(){{$code}};if(node.addEventListener){node.addEventListener('{$type}',function(){return {$callback}.apply(node,arguments);});}else if(node.attachEvent){node.attachEvent('on{$type}',function(){return {$callback}.apply(node,arguments);});}else{node['on{$type}']=function(){return {$callback}.apply(node,arguments);};}";
+					$listeners[] = $this->JsFactory->Listener(array(
+						'node' => $this,
+						'type' => $type,
+						'code' => $event
+					));
 				}
 			}
 		}
-		if ($hasEvents || (isset($this->events) && $allowsEvents)) {
-			$content .= '})();</script>';
+		if (count($listeners) > 0) {
+			$factory = $this->getFactory();
+			$buffer = (isset($factory->settings['buffer']))? $factory->settings['buffer'] : $this->buffer;
+			if (!empty($buffer)) {
+				$view = $factory->getView();
+				$view->append((is_string($buffer))? $buffer : 'script', new CtkContent($view, '<script type="text/javascript">' . implode('', $listeners) . '</script>'));
+			} else {
+				return '<script type="text/javascript">' . implode('', $listeners) . '</script>';
+			}
 		}
-		return $content;
+		return '';
 	}
 }
 
