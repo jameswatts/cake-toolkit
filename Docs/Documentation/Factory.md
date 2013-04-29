@@ -34,6 +34,48 @@ public function build() {
 
 From the example above you will notice how first the **Html** factory is accessed, and then the **Div** object is called as a method of that object. This format for accessing factories is very similar to using Models, and all factories follow this pattern in CTK. It's important to note that an object is returned to the *$div* handler. It has not been rendered as of yet, meaning it remains in a configurable state. The object can also be added to a parent object, or other objects may be added as children. See the [Object](Object.md) documentation for more information on objects.
 
+Factory Helper
+--------------
+
+The **Factory** helper allows objects to be imported from factories into normal ".ctp" views or layouts, providing access to all of the objects used in your CTK based Views.
+
+To use the helper simply include [Ctk.Factory](../../View/Helper/FactoryHelper.php) in your *$helpers* collection in your Controller, for example:
+
+```php
+public $helpers = array(
+	'Ctk.Factory'
+);
+```
+
+Once available, you can now use the helper to call the factories and objects to import them into the view or the layout. This works by calling the factory, followed by the object, from your helper as if it were the View class, for example:
+
+```php
+<?php echo $this->Factory->Html->Span(array('text' => __('Hello World'))); ?>
+```
+
+In the example above the **Html** factory is being loaded, and the **Span** object created then directly rendered. The objects render in the view or the layout as soon as you echo/print or concatenate them with a string. However, you can still build compositions of objects by adding them together, as you would in the View class.
+
+```php
+<?php
+// create a HTML div
+$div = $this->Factory->Html->Div();
+
+	// create a HTML image
+	$img = $this->Factory->Html->Img(array(
+		'src' => '/example.jpg',
+		'alt' => 'An example image'
+	));
+
+// add the image to the div
+$div->add($img);
+
+// render the div
+echo $div;
+?>
+```
+
+Accessing the objects from outside of a CTK based View let's you take full advantage of the factories and objects, without having to rewrite your existing ".ctp" views or layouts.
+
 Checking Objects Exist
 ----------------------
 
@@ -49,6 +91,8 @@ Setting up a Factory
 --------------------
 
 All factories extend the [CtkFactory](../../Lib/CtkFactory.php) class and have an abstract **setup()** method, which serves as the factory's constructor. This initializes the necessary assets and configurations required for it's use in the View. From this method it's possible to reach the View using the **getView()** method, which returns the current [CtkView](../../View/CtkView.php) object.
+
+Sometimes you may want to control if the factory has already been loaded previously. This can be an issue if using the factory in a View, as well as in a layout with the **Factory** helper. To check whether the factory has been loaded before you can call the **isLoaded()** method, which returns a *boolean* which determines the loaded state.
 
 See the [Creating Factories](../Tutorials/Creating-Factories.md) tutorial for more details on creating your own factory.
 
