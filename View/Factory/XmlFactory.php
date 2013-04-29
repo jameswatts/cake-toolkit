@@ -22,12 +22,17 @@ App::uses('CtkFactory', 'Ctk.Lib');
 /**
  * Creates a factory to generate XML elements.
  *
- * @package       Ctk.View
+ * @package       Ctk.View.Factory
  *
  * @method \XmlNode Node($params = array())
  */
 class XmlFactory extends CtkFactory {
 
+/**
+ * Method used to setup additional resources for the factory.
+ * 
+ * @return void
+ */
 	public function setup() {}
 
 }

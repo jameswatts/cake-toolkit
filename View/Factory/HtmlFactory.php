@@ -22,7 +22,7 @@ App::uses('CtkFactory', 'Ctk.Lib');
 /**
  * Creates a factory to generate HTML elements.
  *
- * @package       Ctk.View
+ * @package       Ctk.View.Factory
  *
  * @method \HtmlA A($params = array())
  * @method \HtmlAbbr Abbr($params = array())
@@ -107,6 +107,22 @@ App::uses('CtkFactory', 'Ctk.Lib');
  */
 class HtmlFactory extends CtkFactory {
 
+/**
+ * An array of names of element factories to include.
+ *
+ * @var mixed A single name as a string or a list of names as an array.
+ */
+	public $factories = array(
+		'JsFactory' => array(
+			'className' => 'Ctk.Js'
+		)
+	);
+
+/**
+ * Method used to setup additional resources for the factory.
+ * 
+ * @return void
+ */
 	public function setup() {}
 
 }

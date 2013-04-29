@@ -22,7 +22,7 @@ App::uses('CtkFactory', 'Ctk.Lib');
 /**
  * Creates a factory to generate JavaScript snippets.
  *
- * @package       Ctk.View
+ * @package       Ctk.View.Factory
  *
  * @method \JsAjax Ajax($params = array())
  * @method \JsAlert Alert($params = array())
@@ -43,6 +43,11 @@ App::uses('CtkFactory', 'Ctk.Lib');
  */
 class JsFactory extends CtkFactory {
 
+/**
+ * Method used to setup additional resources for the factory.
+ * 
+ * @return void
+ */
 	public function setup() {}
 
 }
