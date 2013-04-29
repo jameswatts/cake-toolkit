@@ -38,6 +38,7 @@ The event objects available in the **Js** factory are the following:
 * [Event](Js/Event.md) - Base object for all *JavaScript* events.
 * [History](Js/History.md) - Object interface to the *history* object.
 * [Json](Js/Json.md) - Object representing *JSON* data.
+* [Listener](Js/Listener.md) - Object representing an event listener.
 * [Location](Js/Location.md) - Object interface to the *location* object.
 * [Navigator](Js/Navigator.md) - Object interface to the *navigator* object.
 * [Prompt](Js/Prompt.md) - Object representing prompt dialogs.
