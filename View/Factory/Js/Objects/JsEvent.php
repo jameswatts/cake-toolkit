@@ -17,6 +17,7 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkEvent', 'Ctk.Lib');
 
 /**
@@ -63,6 +64,43 @@ abstract class JsEvent extends CtkEvent {
  */
 	protected function _resolveCode($event) {
 		return ($event instanceof CtkEvent)? '(function(){var data=(' . $event . ');return (typeof data==="function")?data():data;})()' : '"' . str_replace('"', '\"', $event) . '"';
+	}
+
+/**
+ * Internal JSON encode which contemplates JavaScript functions.
+ *
+ * @param mixed $data The data to encode as JSON.
+ * @return string
+ */
+	protected function _encodeData($data = null) {
+		if (is_object($data)) {
+			if ($data instanceof CtkEvent) {
+				return $this->_resolveCode($data);
+			} else if ($data instanceof CtkObject) {
+				return '"{' . get_class($data) . ' Object}"';
+			} else {
+				$properties = array();
+				foreach ($data as $property => $value) {
+					$properties[] = '"' . str_replace('"', '\"', $property) . '":' . $this->_encodeData($value);
+				}
+				return '{' . implode(',', $properties) . '}';
+			}
+		} else if (is_array($data)) {
+			if (count(array_filter(array_keys($data), 'is_string')) > 0) {
+				$properties = array();
+				foreach ($data as $key => $value) {
+					$properties[] = '"' . str_replace('"', '\"', $key) . '":' . $this->_encodeData($value);
+				}
+				return '{' . implode(',', $properties) . '}';
+			} else {
+				$items = array();
+				foreach ($data as $item) {
+					$items[] = $this->_encodeData($item);
+				}
+				return '[' . implode(',', $items) . ']';
+			}
+		}
+		return json_encode($data);
 	}
 }
 

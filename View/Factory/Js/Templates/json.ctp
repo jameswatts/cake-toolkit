@@ -1,2 +1,2 @@
-(function(){return <?php echo json_encode($this->value); ?>;})()
+(function(){return <?php echo $this->_encodeData($this->value); ?>;})()
 
