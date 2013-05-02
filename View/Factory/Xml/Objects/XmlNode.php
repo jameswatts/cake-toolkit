@@ -52,6 +52,13 @@ class XmlNode extends CtkNode {
 	protected $_nodeType = 'node';
 
 /**
+ * Determines if the node accepts events.
+ *
+ * @var boolean Set to FALSE to block adding events.
+ */
+	protected $_allowEvents = false;
+
+/**
  * The collection of attributes for the XML node.
  *
  * @var array The node attributes.
