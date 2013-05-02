@@ -1,7 +1,7 @@
 Node
 ====
 
-The [Node](../../View/Factory/Xml/Objects/XmlNode.php) object represents an element (tag) in the *XML* document. As the language is extensible, this object serves as a generic base for any element.
+The [Node](../../../View/Factory/Xml/Objects/XmlNode.php) object represents an element (tag) in the *XML* document. As the language is extensible, this object serves as a generic base for any element.
 
 ```php
 $node = $this->Xml->Node();
@@ -14,14 +14,14 @@ The class inheritance for the object.
 
 ### Extends
 
-* [CtkObject](../../Lib/CtkObject.php)
-* [CtkNode](../../Lib/CtkNode.php)
+* [CtkObject](../../../Lib/CtkObject.php)
+* [CtkNode](../../../Lib/CtkNode.php)
 
 ### Implements
 
-* [CtkBuildable](../../Lib/CtkBuildable.php)
-* [CtkBindable](../../Lib/CtkBindable.php)
-* [CtkRenderable](../../Lib/CtkRenderable.php)
+* [CtkBuildable](../../../Lib/CtkBuildable.php)
+* [CtkBindable](../../../Lib/CtkBindable.php)
+* [CtkRenderable](../../../Lib/CtkRenderable.php)
 
 Parameters
 ----------
