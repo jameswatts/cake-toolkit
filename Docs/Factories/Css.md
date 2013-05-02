@@ -23,7 +23,7 @@ The objects available in the **Css** factory are the following:
 
 * [Block](Css/Block.md) - Base object for all *CSS* elements.
 * [Declaration](Css/Declaration.md) - Object representating the *CSS* selector.
-* [FontFace](Css/FontFace.md) - Object representing the *@font-face* declaration.
+* [Fontface](Css/Fontface.md) - Object representing the *@font-face* declaration.
 * [Media](Css/Media.md) - Object representing the *@media* declaration.
 * [Rule](Css/Rule.md) - Object representing a single *property* and *value*.
 

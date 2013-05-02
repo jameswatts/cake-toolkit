@@ -1,10 +1,10 @@
-Rule
-====
+Fontface
+========
 
-The [Rule](../../../View/Factory/Css/Objects/CssRule.php) object represents a *CSS* selector and container for a set of declarations.
+The [Fontface](../../../View/Factory/Css/Objects/CssFontface.php) object represents a custom font at-rule in *CSS*.
 
 ```php
-$rule = $this->Css->Rule();
+$fontface = $this->Css->Fontface();
 ```
 
 Object
@@ -37,10 +37,40 @@ The configuration parameters for the template.
 		<th>Description</th>
 	</tr>
 	<tr>
-		<td>selector</td>
+		<td>src</td>
 		<td>string</td>
-		<td>*</td>
-		<td>Defines the CSS query selector for the contained declarations.</td>
+		<td>null</td>
+		<td>Defines a font name that will be used as the font face value.</td>
+	</tr>
+	<tr>
+		<td>family</td>
+		<td>string</td>
+		<td>null</td>
+		<td>Defines the URL for the font file, or the name of a local font in the form local("Font Name").</td>
+	</tr>
+	<tr>
+		<td>weight</td>
+		<td>string</td>
+		<td>normal</td>
+		<td>Defines the weight or boldness of the font.</td>
+	</tr>
+	<tr>
+		<td>style</td>
+		<td>string</td>
+		<td>normal</td>
+		<td>Defines the "italic" or "oblique" faces from a font.</td>
+	</tr>
+	<tr>
+		<td>stretch</td>
+		<td>string</td>
+		<td>normal</td>
+		<td>Defines a "normal", "condensed", or "expanded" face from a font.</td>
+	</tr>
+	<tr>
+		<td>unicode</td>
+		<td>string</td>
+		<td>null</td>
+		<td>Defines the range of Unicode characters supported by a font.</td>
 	</tr>
 </table>
 
@@ -62,7 +92,7 @@ The properties affecting object behavior.
 	</tr>
 	<tr>
 		<td>Allow children</td>
-		<td>true</td>
+		<td>false</td>
 		<td>Determines if the object can have children.</td>
 	</tr>
 	<tr>
@@ -77,7 +107,7 @@ The properties affecting object behavior.
 	</tr>
 	<tr>
 		<td>Limit children</td>
-		<td>CssDeclaration</td>
+		<td></td>
 		<td>Defines the allowed children for the object, or any if none specified.</td>
 	</tr>
 </table>
