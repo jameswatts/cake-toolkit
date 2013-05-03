@@ -50,12 +50,5 @@ class HtmlFieldset extends HtmlElement {
  * @var string The element type.
  */
 	protected $_nodeType = 'fieldset';
-
-/**
- * Limits the parent allowed for this node.
- *
- * @var array List of parents allowed by name, or NULL for no limit.
- */
-	protected $_limitParent = array('HtmlForm');
 }
 
