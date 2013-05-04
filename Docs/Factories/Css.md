@@ -27,5 +27,9 @@ The objects available in the **Css** factory are the following:
 * [Media](Css/Media.md) - Object representing the *@media* declaration.
 * [Rule](Css/Rule.md) - Object representing a single *property* and *value*.
 
-If using the **Css** factory to build stylesheets it's advised to use the *Ajax* layout for the View.
+The **Css** factory provides a layout specific for *CSS*, which can be set from the *$layout* property of the CTK class, for example:
+
+```php
+public $layout = 'Ctk.Css/default';
+```
 

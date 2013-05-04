@@ -45,5 +45,9 @@ The event objects available in the **Js** factory are the following:
 * [Redirect](Js/Redirect.md) - Object representing alert dialogs.
 * [Window](Js/Window.md) - Object interface to the *window* object.
 
-If using the **Js** factory to build script files it's advised to use the *Ajax* layout for the View.
+The **Js** factory provides a layout specific for *JavaScript*, which can be set from the *$layout* property of the CTK class, for example:
+
+```php
+public $layout = 'Ctk.Js/default';
+```
 

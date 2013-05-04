@@ -109,3 +109,9 @@ There are also various **layouts** available for this factory:
 * **html5**: A HTML 5 compatible layout.
 * **xhtml**: An XHTML 1.0 compatible layout.
 
+The layout can be set from the *$layout* property of the CTK class, for example:
+
+```php
+public $layout = 'Ctk.Html/html5';
+```
+
