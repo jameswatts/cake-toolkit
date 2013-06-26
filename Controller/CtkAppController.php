@@ -17,6 +17,13 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+App::uses('AppController', 'Controller');
+
+/**
+ * Abstract CTK controller.
+ *
+ * @package       Ctk.Controller
+ */
 abstract class CtkAppController extends AppController {
 
 /**
