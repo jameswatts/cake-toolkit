@@ -22,6 +22,7 @@ App::uses('CtkBuildable', 'Ctk.Lib');
 App::uses('CtkBindable', 'Ctk.Lib');
 App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
+App::uses('CtkContent', 'Ctk.Lib');
 App::uses('CtkFactory', 'Ctk.Lib');
 App::uses('CtkEvent', 'Ctk.Lib');
 App::uses('CtkHelperView', 'Ctk.View');
@@ -756,6 +757,17 @@ abstract class CtkNode extends CtkObject implements CtkBuildable, CtkBindable, C
 			return $this;
 		}
 		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
+ * Adds raw content to the children of this node.
+ *
+ * @param mixed $content The raw content to add.
+ * @return CtkBuildable
+ */
+	final public function addContent($content = '') {
+		$this->_childNodes[] = new CtkContent($this->_factory->getView(), $content);
+		return $this;
 	}
 
 /**

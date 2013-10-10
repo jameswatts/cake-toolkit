@@ -316,6 +316,17 @@ class CtkContent extends CtkObject implements CtkBuildable, CtkRenderable {
 	}
 
 /**
+ * Adds raw content to the children of this node.
+ *
+ * @param mixed $content The raw content to add.
+ * @return CtkBuildable
+ */
+	final public function addContent($content = '') {
+		$this->_content .= (string) $content;
+		return $this;
+	}
+
+/**
  * Replaces the specified node with the given node.
  *
  * @param CtkBuildable $node Child node.

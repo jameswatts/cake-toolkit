@@ -176,6 +176,14 @@ interface CtkBuildable {
 	public function addWhile($callback, array $data = array());
 
 /**
+ * Adds raw content to the children of this node.
+ *
+ * @param mixed $content The raw content to add.
+ * @return CtkBuildable
+ */
+	public function addContent($content = '');
+
+/**
  * Replaces the specified node with the given node.
  *
  * @param CtkBuildable $node Child node.

@@ -26,6 +26,7 @@ App::uses('CtkRenderable', 'Ctk.Lib');
 App::uses('CtkObject', 'Ctk.Lib');
 App::uses('CtkFactory', 'Ctk.Lib');
 App::uses('CtkNode', 'Ctk.Lib');
+App::uses('CtkContent', 'Ctk.Lib');
 App::uses('CtkElement', 'Ctk.Lib');
 
 /**
@@ -814,6 +815,17 @@ abstract class CtkView extends CtkObject {
 			$this->add($node);
 			$node = call_user_func_array($callback, array($this, $this, $data, ++$i));
 		}
+		return $this;
+	}
+
+/**
+ * Adds raw content to the children of the view object.
+ *
+ * @param mixed $content The raw content to add.
+ * @return CtkView
+ */
+	final public function addContent($content = '') {
+		$this->_childNodes[] = new CtkContent($this, $content);
 		return $this;
 	}
 

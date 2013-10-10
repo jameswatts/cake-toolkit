@@ -353,6 +353,17 @@ class CtkElement extends CtkObject implements CtkBuildable, CtkRenderable {
 	}
 
 /**
+ * Adds raw content to the children of this node.
+ *
+ * @param mixed $content The raw content to add.
+ * @return CtkBuildable
+ * @throws CakeException if this node does not allow children.
+ */
+	final public function addContent($content = '') {
+		throw new CakeException(sprintf('Cannot add children to %s', get_class($this)));
+	}
+
+/**
  * Replaces the specified node with the given node.
  *
  * @param CtkBuildable $node Child node.
