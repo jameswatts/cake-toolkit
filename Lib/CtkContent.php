@@ -75,6 +75,45 @@ class CtkContent extends CtkObject implements CtkBuildable, CtkRenderable {
 	}
 
 /**
+ * Returns a property from the content.
+ *
+ * @param string $name The property name.
+ * @return mixed
+ */
+	final public function __get($name) {
+		return $this->_content->$name;
+	}
+
+/**
+ * Sets a property on the content.
+ *
+ * @param string $name The property name.
+ * @param mixed $value The property value.
+ */
+	final public function __set($name, $value = null) {
+		$this->_content->$name = $value;
+	}
+
+/**
+ * Calls a method on the content.
+ *
+ * @param string $name The method name.
+ * @param array $arguments The arguments to pass.
+ * @return mixed
+ */
+	final public function __call($name, $arguments) {
+		array_walk_recursive($arguments, function(&$value, $key) {
+			if (is_object($value) && $value instanceof CtkRenderable) {
+				$value = $value->render();
+			}
+		});
+		ob_start();
+		$return = call_user_func_array(array($this->_content, $name), $arguments);
+		ob_end_clean();
+		return ($return instanceof CtkBuildable || $return instanceof CtkRenderable)? $return : new CtkContent($this->_view, $return);
+	}
+
+/**
  * Returns the name of the object.
  *
  * @return string
