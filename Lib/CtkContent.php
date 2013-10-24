@@ -58,7 +58,7 @@ class CtkContent extends CtkObject implements CtkBuildable, CtkRenderable {
 	final public function __construct(CtkView $view, $content = '') {
 		parent::__construct();
 		$this->_view = $view;
-		$this->_content = (string) $content;
+		$this->_content = $content;
 	}
 
 /**
@@ -422,7 +422,7 @@ class CtkContent extends CtkObject implements CtkBuildable, CtkRenderable {
  * @return string
  */
 	final public function render() {
-		return $this->_content;
+		return (string) $this->_content;
 	}
 
 /**
