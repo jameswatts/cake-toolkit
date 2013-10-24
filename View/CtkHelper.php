@@ -102,7 +102,10 @@ class CtkHelper extends CtkObject {
 		});
 		ob_start();
 		$return = call_user_func_array(array($this->_helper, $name), $arguments);
-		ob_end_clean();
+		$output = ob_get_clean();
+		if ($return === null && $output !== '' && $output !== false && $output !== null) {
+			$return = $output;
+		}
 		return ($return instanceof CtkBuildable || $return instanceof CtkRenderable)? $return : new CtkContent($this->_view, $return);
 	}
 }
