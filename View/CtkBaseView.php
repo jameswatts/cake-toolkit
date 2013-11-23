@@ -137,6 +137,7 @@ class CtkBaseView extends View {
 			$this->loadHelpers();
 		}
 		$this->assign('content', '');
+		$this->ext = '.php';
 		$this->_overrideExtType = true;
 		if ($view !== false && $viewFileName = $this->_getViewClassFileName(Inflector::camelize($this->view) . 'View')) {
 			$this->_currentType = self::TYPE_VIEW;
