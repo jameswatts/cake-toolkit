@@ -228,7 +228,7 @@ If you'd like to contribute new features, enhancements or bug fixes to the code 
 * Consider using the [CakePHP Code Sniffer](https://github.com/cakephp/cakephp-codesniffer) to check the quality of your code
 * When ready, make a [pull request](http://help.github.com/send-pull-requests/) to the main repository
 
-There may be some discussion reagrding your contribution to the repository before any code is merged in, so be prepared to provide feedback on your contribution if required.
+There may be some discussion regarding your contribution to the repository before any code is merged in, so be prepared to provide feedback on your contribution if required.
 
 A list of contributors to the **Cake Toolkit** can be found [here](https://github.com/jameswatts/cake-toolkit/contributors).
 
