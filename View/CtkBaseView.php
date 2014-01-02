@@ -141,9 +141,7 @@ class CtkBaseView extends View {
 		$this->_overrideExtType = true;
 		if ($view !== false && $viewFileName = $this->_getViewClassFileName(Inflector::camelize($this->view) . 'View')) {
 			$this->_currentType = self::TYPE_VIEW;
-			$this->getEventManager()->dispatch(new CakeEvent('View.beforeRender', $this, array($viewFileName)));
 			$this->assign('content', $this->_build($viewFileName));
-			$this->getEventManager()->dispatch(new CakeEvent('View.afterRender', $this, array($viewFileName)));
 		}
 		if ($layout === null) {
 			$layout = $this->layout;
@@ -184,8 +182,10 @@ class CtkBaseView extends View {
 		$class = $this->_viewClass;
 		$this->_viewObject = new $class($this);
 		$this->_viewObject->build();
+		$this->getEventManager()->dispatch(new CakeEvent('View.beforeRender', $this, array($viewFile)));
 		$content = $this->_viewObject->render();
 		$content = $this->_viewObject->process($content);
+		$this->getEventManager()->dispatch(new CakeEvent('View.afterRender', $this, array($viewFile)));
 		if ((int) Configure::read('debug') > 0) {
 			$this->stats['endTime'] = explode(' ', microtime());
 			$this->stats['memoryAfter'] = memory_get_usage();
