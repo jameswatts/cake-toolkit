@@ -12,6 +12,10 @@ if (isset($this->method) && is_string($this->method) && strtolower($this->method
 	$url = $this->_resolveCode($this->url) . '+""' . ((count($params))? ' + "' . ((strstr($this->url, '?'))? '&' : '?') . implode('&', $params) . '"' : '');
 	echo 'request.open("get",' . $url . ',' . ((isset($this->async) && $this->async)? 'true' : 'false') . ',' . $this->_resolveCode($this->username) . ',' . $this->_resolveCode($this->password) . ');';
 }
+echo 'request.setRequestHeader("X-Requested-With", "XMLHttpRequest");';
+if (isset($this->headers) && is_array($this->headers)) {
+	echo 'var headers=' . json_encode($this->headers) . ';for(var header in headers){request.setRequestHeader(header,headers[header]);}';
+}
 echo 'request.onreadystatechange=function(e){if(request.readyState===4&&request.status===200){(function(){' . ((isset($this->code) && is_array($this->code))? implode(';', $this->code) : $this->code) . '}).call(request);}};request.send(' . ((count($params))? '"' . implode('&', $params) . '"' : 'null') . ');';
 ?>})()
 

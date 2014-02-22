@@ -46,6 +46,7 @@ class JsAjax extends JsEvent {
 		'async' => true,
 		'username' => '',
 		'password' => '',
+		'headers' => array(),
 		'code' => 'return false'
 	);
 
