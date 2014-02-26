@@ -47,7 +47,7 @@ Configuration
 The plugin doesn't have any specific configuration settings. However, you will need to add the plugin in your bootstrap file. If you haven't already, add the following line to your bootstrap file:
 
 ```
-CakePlugin::loadPlugin('Ctk');
+CakePlugin::load('Ctk');
 ```
 
 This isn't required if you're already calling **CakePlugin::loadAll()**, as all plugins will be loaded.
