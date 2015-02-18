@@ -53,7 +53,8 @@ class JsFactory extends CtkFactory {
 /**
  * Method used to return an Instance of a JSElement to avoid passing non-valid variables to JS methods
  * such as binding
- * @param CtkNode $node
+ * 
+ * @param CtkNode $node node to be encapsulated inside the element
  * @return JsElement Element to be used for processing JS with
  */
 	public function getElement(CtkNode $node) {
