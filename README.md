@@ -242,4 +242,4 @@ Licensed under the MIT License. Redistributions of the source code included in t
 Acknowledgements
 ----------------
 
-A special thanks to [Larry Masters](https://github.com/phpnut), the founder of [CakePHP](http://cakephp.org), for his help and support, to [José Lorenzo](https://github.com/lorenzo) for his input early on when I was hacking the framework, to [Florian Krämer](https://github.com/burzum) for his constructive critisism, as well as the entire [CakeDC](http://cakedc.com) team for their feedback and encouragement.
+A special thanks to [Larry Masters](https://github.com/phpnut), the founder of [CakePHP](http://cakephp.org), for his help and support, to [José Lorenzo](https://github.com/lorenzo) for his input early on when I was hacking the framework, to [Florian Krämer](https://github.com/burzum) for his constructive criticism, as well as the entire [CakeDC](http://cakedc.com) team for their feedback and encouragement.
